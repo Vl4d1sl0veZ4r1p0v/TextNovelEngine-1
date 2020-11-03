@@ -12,6 +12,9 @@ public class MathTools {
     }
 
     public static boolean isInteger(String line) {
+        if (line == null || line.length() == 0){
+            return false;
+        }
         var firstChar = line.charAt(0);
         if (!(firstChar == '-' || Character.isDigit(firstChar))) {
             return false;
