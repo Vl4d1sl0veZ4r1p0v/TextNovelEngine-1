@@ -4,21 +4,17 @@ import com.urfu.textnovelengine.DialogNode;
 import com.urfu.textnovelengine.SimpleTalker;
 import com.urfu.textnovelengine.backendapi.Talker;
 
-import java.io.FileNotFoundException;
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.HashMap;
 
 public class ScriptParser {
     public static DialogNode parse(String scriptPath) throws IOException {
-        var filePath = Paths.get(scriptPath);
-        if (!Files.exists(filePath)) {
-            System.out.println("ERROR: script: " + scriptPath + " is not exist");
-            throw new FileNotFoundException();
-        }
+        ClassLoader classLoader = ClassLoader.getSystemClassLoader();
+        File file = new File(classLoader.getResource(scriptPath).getFile());
 
-        var text = Files.readAllLines(filePath);
+        var text = Files.readAllLines(file.toPath());
         var nodesAmount = Integer.parseInt(text.get(0).split(": ")[1]);
         var nodes = new DialogNode[nodesAmount];
         var talkers = new HashMap<String, Talker>();

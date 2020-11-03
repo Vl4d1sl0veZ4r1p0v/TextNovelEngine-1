@@ -9,7 +9,9 @@ import java.io.IOException;
 public class Main {
 
     public static void main(String[] args) throws IOException {
-        run("./assets/" + args[0] + ".sc", new ConsoleFrontend(System.in));
+        //run(args[0] + ".sc", new ConsoleFrontend(System.in));
+        String fileName = "primitive_dialog.sc";
+        run(fileName, new ConsoleFrontend(System.in));
     }
 
     public static void run(String script, IO io) throws IOException {
@@ -30,8 +32,20 @@ public class Main {
             io.printMessage("цифра ответа: ");
 
             var answer = io.getUserAnswer();
-            if (answer.equals("exit")) {
-                return;
+
+            switch (answer) {
+                case "exit":
+                    return;
+                case "help":
+                    io.printMessage(
+                            """
+                            Данное приложение представляет консольный интерфейс
+                            для текстовой новеллы. Чтобы ответить, наберите число перед
+                            выбранным ответом. Чтобы повторить последнее сообщение,
+                            напишите 'repeat'. Чтобы закончить напишите 'exit'.
+                            Напишите 'start', чтобы начать диалог.
+                            """);
+                    break;
             }
 
             if (!MathTools.isValidAnswer(answer, answers.length)) {
