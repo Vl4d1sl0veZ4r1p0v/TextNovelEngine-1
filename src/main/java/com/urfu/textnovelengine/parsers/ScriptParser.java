@@ -10,9 +10,9 @@ import java.nio.file.Files;
 import java.util.HashMap;
 
 public class ScriptParser {
-    public static DialogNode[] parse(String scriptPath) throws IOException {
+    public static DialogNode[] parse(String scriptName) throws IOException {
         ClassLoader classLoader = ClassLoader.getSystemClassLoader();
-        File file = new File(classLoader.getResource(scriptPath).getFile());
+        File file = new File(classLoader.getResource(scriptName + ".sc").getFile());
 
         var text = Files.readAllLines(file.toPath());
         var nodesAmount = Integer.parseInt(text.get(0).split(": ")[1]);

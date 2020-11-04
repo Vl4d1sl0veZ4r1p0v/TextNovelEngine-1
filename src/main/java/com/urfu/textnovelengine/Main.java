@@ -1,6 +1,6 @@
 package com.urfu.textnovelengine;
 
-import com.urfu.textnovelengine.parsers.ScriptParser;
+import com.urfu.textnovelengine.backendapi.User;
 import com.urfu.textnovelengine.backendapi.IO;
 import com.urfu.textnovelengine.frontend.ConsoleFrontend;
 
@@ -9,16 +9,19 @@ import java.io.IOException;
 public class Main {
 
     public static void main(String[] args) throws IOException {
-        run(args[0] + ".sc", new ConsoleFrontend(System.in));
+        testRun(args[0], new ConsoleFrontend(System.in));
     }
 
-    public static void run(String scriptName, IO io) throws IOException {
-        var scriptNodes = ScriptParser.parse(scriptName);
-        var script = new Script(scriptNodes);
-        var doesContinue = script.StartDialog(io);
+    public static void testRun(String scriptName, IO io) throws IOException {
+        var scriptsManager = new ScriptsManager();
+        var dialogMachine = new DialogStateMachine(scriptsManager);
 
+        var testUser = new User(1);
+        testUser.setNewScript(scriptName);
+
+        var doesContinue = dialogMachine.StartDialog(testUser, io);
         while (doesContinue) {
-            doesContinue = script.Update(io);
+            doesContinue = dialogMachine.Update(testUser, io);
         }
     }
 
