@@ -1,11 +1,11 @@
 package com.urfu.textnovelengine.backendapi;
 
 public class User {
-    public final long ID;
+    public final int ID;
     private String CurrentScript;
     private int CurrentNodeIndex;
 
-    public User(long ID) {
+    public User(int ID) {
         this.ID = ID;
     }
 
@@ -22,7 +22,7 @@ public class User {
         CurrentScript = null;
     }
 
-    public boolean isCurrentScriptExist() {
+    public boolean hasRunningScript() {
         return CurrentScript != null;
     }
 

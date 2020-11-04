@@ -4,21 +4,16 @@ import com.urfu.textnovelengine.backendapi.IO;
 import com.urfu.textnovelengine.backendapi.User;
 
 public class DialogStateMachine {
-    private final ScriptsManager scriptsManager;
 
-    public DialogStateMachine(ScriptsManager scriptsManager) {
-        this.scriptsManager = scriptsManager;
-    }
-
-    public boolean StartDialog(User user, IO io) {
-        var userCurrentScript = scriptsManager.getScript(user.getCurrentScript());
+    public boolean StartDialog(User user, ScriptsManager scripts, IO io) {
+        var userCurrentScript = scripts.getScript(user.getCurrentScript());
         return PrintResponse(user, userCurrentScript, io);
     }
 
-    public boolean Update(User user, IO io) {
-        var userCurrentScript = scriptsManager.getScript(user.getCurrentScript());
+    public boolean Update(User user, ScriptsManager scripts, IO io) {
+        var userCurrentScript = scripts.getScript(user.getCurrentScript());
         CheckAnswer(user, userCurrentScript, io);
-        if (!user.isCurrentScriptExist()) {
+        if (!user.hasRunningScript()) {
             return false;
         }
         return PrintResponse(user, userCurrentScript, io);
@@ -29,7 +24,7 @@ public class DialogStateMachine {
         var answers = currentNode.getAnswers();
         var talker = currentNode.getTalker();
 
-        io.printMessage((talker.talk(currentNode.getMessage())));
+        io.printMessage((talker.talk(currentNode.getTalkerMessage())));
 
         if (answers == null) {
             user.clearCurrentScript();
@@ -37,9 +32,7 @@ public class DialogStateMachine {
             return false;
         }
 
-        io.printMessage("Что ответишь?");
         io.printPossibleAnswers(answers);
-        io.printMessage("цифра ответа: ");
 
         return true;
     }
@@ -51,15 +44,15 @@ public class DialogStateMachine {
         var talker = currentNode.getTalker();
 
         switch (answer) {
-            case "exit":
+            case "/exit":
                 user.clearCurrentScript();
                 io.printMessage("Выход");
                 return;
 
-            case "repeat":
+            case "/repeat":
                 return;
 
-            case "help":
+            case "/help":
                 io.printMessage(
                         """
                                 Напишите 'start', чтобы начать диалог. 
@@ -70,13 +63,14 @@ public class DialogStateMachine {
                 return;
         }
 
-        if (!MathTools.isValidAnswer(answer, answers.length)) {
+        var answerIndex = io.getAnswerIndex(answer, answers);
+        if (answerIndex == -1) {
             io.printMessage(talker.wrongInputReaction());
             return;
         }
 
         var responses = currentNode.getResponses();
-        user.setCurrentNodeIndex(responses[Integer.parseInt(answer) - 1]);
+        user.setCurrentNodeIndex(responses[answerIndex]);
     }
 
 }

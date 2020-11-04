@@ -30,9 +30,10 @@ public class ScriptParser {
             }
 
             if (buffer[0].equals("node")) {
-                var newNode = new DialogNode();
-                newNode.setTalker(talkers.get(text.get(++i).split(": ")[1]));
-                newNode.setMessage(text.get(++i).split(": ")[1]);
+                var talker = talkers.get(text.get(++i).split(": ")[1]);
+                var talkerMessage = text.get(++i).split(": ")[1];
+                var newNode = new DialogNode(talker, talkerMessage);
+
                 var answersAmount = Integer.parseInt(text.get(++i).split(": ")[1]);
                 if (answersAmount != 0) {
                     var answers = new String[answersAmount];

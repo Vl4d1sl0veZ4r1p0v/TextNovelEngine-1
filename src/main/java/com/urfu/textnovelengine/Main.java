@@ -1,7 +1,5 @@
 package com.urfu.textnovelengine;
 
-import com.urfu.textnovelengine.backendapi.User;
-import com.urfu.textnovelengine.backendapi.IO;
 import com.urfu.textnovelengine.frontend.ConsoleFrontend;
 
 import java.io.IOException;
@@ -9,19 +7,19 @@ import java.io.IOException;
 public class Main {
 
     public static void main(String[] args) throws IOException {
-        testRun(args[0], new ConsoleFrontend(System.in));
+        testRun();
     }
 
-    public static void testRun(String scriptName, IO io) throws IOException {
-        var scriptsManager = new ScriptsManager();
-        var dialogMachine = new DialogStateMachine(scriptsManager);
+    public static void testRun() throws IOException {
+        var backend = new Backend();
+        var io = new ConsoleFrontend(System.in);
 
-        var testUser = new User(1);
-        testUser.setNewScript(scriptName);
+        var testUserID = 1;
 
-        var doesContinue = dialogMachine.StartDialog(testUser, io);
-        while (doesContinue) {
-            doesContinue = dialogMachine.Update(testUser, io);
+        backend.UpdateUser(testUserID, io);
+        var user = backend.Users.getUser(testUserID);
+        while (user.hasRunningScript()) {
+            backend.UpdateUser(testUserID, io);
         }
     }
 

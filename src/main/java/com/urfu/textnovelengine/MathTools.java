@@ -29,4 +29,14 @@ public class MathTools {
         return true;
     }
 
+    public static boolean contains(String value, String[] container) {
+        for (var guessValue : container) {
+            if (guessValue.equals(value)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
 }

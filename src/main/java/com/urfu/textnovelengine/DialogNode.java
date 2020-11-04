@@ -3,25 +3,22 @@ package com.urfu.textnovelengine;
 import com.urfu.textnovelengine.backendapi.Talker;
 
 public class DialogNode {
-    private Talker talker;
-    private String message;
+    private final Talker talker;
+    private final String talkerMessage;
     private String[] answers;
     private int[] responses;
+
+    public DialogNode(Talker talker, String talkerMessage) {
+        this.talker = talker;
+        this.talkerMessage = talkerMessage;
+    }
 
     public Talker getTalker() {
         return talker;
     }
 
-    public void setTalker(Talker talker) {
-        this.talker = talker;
-    }
-
-    public String getMessage() {
-        return message;
-    }
-
-    public void setMessage(String message) {
-        this.message = message;
+    public String getTalkerMessage() {
+        return talkerMessage;
     }
 
     public String[] getAnswers() {

@@ -9,10 +9,11 @@ import java.util.HashMap;
 
 public class ScriptsManager {
     private final HashMap<String, Script> Scripts;
+    private final String[] ScriptsNames;
 
     public ScriptsManager() throws IOException {
-        Scripts = new HashMap<>();
-        ParseAllScripts(getScriptsNames());
+        ScriptsNames = getScriptsNames();
+        Scripts = ParseAllScripts(ScriptsNames);
     }
 
     private String[] getScriptsNames() throws IOException {
@@ -22,14 +23,21 @@ public class ScriptsManager {
         return text.toArray(new String[0]);
     }
 
-    private void ParseAllScripts(String[] scriptsNames) throws IOException {
+    private HashMap<String, Script> ParseAllScripts(String[] scriptsNames) throws IOException {
+        var scripts = new HashMap<String, Script>();
         for (String name : scriptsNames) {
-            Scripts.put(name, ScriptParser.parse(name));
+            scripts.put(name, ScriptParser.parse(name));
         }
+
+        return scripts;
     }
 
     public Script getScript(String scriptName) {
         return Scripts.get(scriptName);
+    }
+
+    public String[] getAllScriptsNames() {
+        return ScriptsNames;
     }
 
 }
