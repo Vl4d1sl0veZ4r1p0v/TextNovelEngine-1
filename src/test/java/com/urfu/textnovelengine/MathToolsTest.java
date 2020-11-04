@@ -40,7 +40,7 @@ class MathToolsTest {
 
     @Test
     void isValidAnswerCorrect() {
-        for (var i = 1; i <= QuestionsAmount; ++i){
+        for (var i = 1; i <= QuestionsAmount; ++i) {
             assertTrue(MathTools.isValidAnswer(String.valueOf(i), QuestionsAmount));
         }
     }
@@ -48,7 +48,7 @@ class MathToolsTest {
     @Test
     void isValidAnswerNotAnInt() {
         assertFalse(MathTools.isValidAnswer(String.valueOf(0.9999f), QuestionsAmount));
-        for (var i = 1; i <= QuestionsAmount; ++i){
+        for (var i = 1; i <= QuestionsAmount; ++i) {
             assertFalse(MathTools.isValidAnswer(String.valueOf(i + 0.01f), QuestionsAmount));
         }
     }
