@@ -9,5 +9,4 @@ public class ChadNovelEngineApplication {
     public static void main(String[] args) {
         SpringApplication.run(ChadNovelEngineApplication.class, args);
     }
-
 }

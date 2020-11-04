@@ -1,29 +1,54 @@
 package com.urfu.telegrambot;
 
+import com.urfu.chadnovelengine.Backend;
+import com.urfu.telegrambot.botapi.TelegramMessageButtonsFrontend;
 import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
 import org.telegram.telegrambots.bots.DefaultBotOptions;
 import org.telegram.telegrambots.bots.TelegramWebhookBot;
 import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
+import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
-import com.urfu.telegrambot.botapi.TelegramFacade;
 
+import java.io.IOException;
+
+@Slf4j
 public class ChadNovelEngineTelegramBot extends TelegramWebhookBot {
     private String webHookPath;
     private String botToken;
     private String botUsername;
+    private final Backend chadNovelEngineBackend;
+    private final TelegramMessageButtonsFrontend IO;
 
-    private TelegramFacade telegramFacade;
-
-    public ChadNovelEngineTelegramBot(DefaultBotOptions botOptions, TelegramFacade telegramFacade) {
+    public ChadNovelEngineTelegramBot(DefaultBotOptions botOptions) throws IOException {
         super(botOptions);
-        this.telegramFacade = telegramFacade;
+        IO = new TelegramMessageButtonsFrontend();
+        chadNovelEngineBackend = new Backend();
     }
 
     @SneakyThrows
     @Override
     public BotApiMethod<?> onWebhookUpdateReceived(Update update) {
-        final BotApiMethod<?> replyToUser = telegramFacade.handleUpdate(update);
-        return replyToUser;
+        Message message = update.getMessage();
+        if (message == null || !message.hasText()) {
+            return null;
+        }
+
+        var userName = message.getFrom().getUserName();
+        var userID = message.getFrom().getId();
+        var chatID = message.getChatId();
+        var messageText = message.getText();
+
+        log.info("New message from User:{}, userId: {}, chatId: {},  with text: {}",
+                userName, userID, chatID, messageText);
+
+        IO.setUserAnswer(messageText);
+        chadNovelEngineBackend.UpdateUser(userID, IO);
+
+        var replyMessage = IO.makeMessage();
+        replyMessage.setChatId(chatID);
+
+        return replyMessage;
     }
 
     @Override

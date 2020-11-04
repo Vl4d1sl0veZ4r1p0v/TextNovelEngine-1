@@ -1,6 +1,5 @@
 package com.urfu.telegrambot.appconfig;
 
-
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -9,7 +8,8 @@ import org.springframework.context.annotation.Configuration;
 import org.telegram.telegrambots.bots.DefaultBotOptions;
 import org.telegram.telegrambots.meta.ApiContext;
 import com.urfu.telegrambot.ChadNovelEngineTelegramBot;
-import com.urfu.telegrambot.botapi.TelegramFacade;
+
+import java.io.IOException;
 
 @Getter
 @Setter
@@ -21,10 +21,10 @@ public class BotConfig {
     private String botToken;
 
     @Bean
-    public ChadNovelEngineTelegramBot textNovelEngineTelegramBot(TelegramFacade telegramFacade){
+    public ChadNovelEngineTelegramBot textNovelEngineTelegramBot() throws IOException {
         DefaultBotOptions options = ApiContext.getInstance(DefaultBotOptions.class);
 
-        ChadNovelEngineTelegramBot chadNovelEngineTelegramBot = new ChadNovelEngineTelegramBot(options, telegramFacade);
+        ChadNovelEngineTelegramBot chadNovelEngineTelegramBot = new ChadNovelEngineTelegramBot(options);
         chadNovelEngineTelegramBot.setBotToken(botToken);
         chadNovelEngineTelegramBot.setBotUsername(botUsername);
         chadNovelEngineTelegramBot.setWebHookPath(webHookPath);
