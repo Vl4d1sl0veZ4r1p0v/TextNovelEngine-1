@@ -17,22 +17,36 @@ public class Backend {
 
     public void UpdateUser(int userID, IO io) {
         var user = Users.getUser(userID);
+        var scriptsNames = Scripts.getAllScriptsNames();
+
         if (user == null) {
             user = Users.addUser(userID);
         }
 
         if (user.hasRunningScript()) {
-            DialogStateMachine.Update(user, Scripts, io);
+            checkContinuity(
+                    DialogStateMachine.Update(user, Scripts, io),
+                    scriptsNames,
+                    io);
         } else {
             var userAnswer = io.getUserAnswer();
-            var scriptsNames = Scripts.getAllScriptsNames();
             if (MathTools.contains(userAnswer, scriptsNames)) {
                 user.setNewScript(userAnswer);
-                DialogStateMachine.StartDialog(user, Scripts, io);
+                checkContinuity(
+                        DialogStateMachine.StartDialog(user, Scripts, io),
+                        scriptsNames,
+                        io);
             } else {
                 io.printMessage("Выберите сюжет:");
                 io.printExistingScriptsNames(scriptsNames);
             }
+        }
+    }
+
+    private void checkContinuity(boolean doesContinue, String[] scriptsNames, IO io) {
+        if (!doesContinue) {
+            io.printMessage("Выберите новый сюжет:");
+            io.printExistingScriptsNames(scriptsNames);
         }
     }
 
