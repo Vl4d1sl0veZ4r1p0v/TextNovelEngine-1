@@ -24,7 +24,7 @@ public class DialogStateMachine {
         var answers = currentNode.getAnswers();
         var talker = currentNode.getTalker();
 
-        io.printMessage((talker.talk(currentNode.getMessage())));
+        io.printMessage((talker.talk(currentNode.getTalkerMessage())));
 
         if (answers == null) {
             user.clearCurrentScript();

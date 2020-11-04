@@ -1,7 +1,7 @@
 package com.urfu.telegrambot;
 
 import com.urfu.chadnovelengine.Backend;
-import com.urfu.telegrambot.botapi.TelegramMessageButtonsFrontend;
+import com.urfu.telegrambot.botapi.TelegramIO;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.telegram.telegrambots.bots.DefaultBotOptions;
@@ -18,11 +18,9 @@ public class ChadNovelEngineTelegramBot extends TelegramWebhookBot {
     private String botToken;
     private String botUsername;
     private final Backend chadNovelEngineBackend;
-    private final TelegramMessageButtonsFrontend IO;
 
     public ChadNovelEngineTelegramBot(DefaultBotOptions botOptions) throws IOException {
         super(botOptions);
-        IO = new TelegramMessageButtonsFrontend();
         chadNovelEngineBackend = new Backend();
     }
 
@@ -39,13 +37,14 @@ public class ChadNovelEngineTelegramBot extends TelegramWebhookBot {
         var chatID = message.getChatId();
         var messageText = message.getText();
 
-        log.info("New message from User:{}, userId: {}, chatId: {},  with text: {}",
+        log.info("New message from User: {}, userId: {}, chatId: {}, with text: {}",
                 userName, userID, chatID, messageText);
 
-        IO.setUserAnswer(messageText);
-        chadNovelEngineBackend.UpdateUser(userID, IO);
+        var io = new TelegramIO();
+        io.setUserAnswer(messageText);
+        chadNovelEngineBackend.UpdateUser(userID, io);
 
-        var replyMessage = IO.makeMessage();
+        var replyMessage = io.makeMessage();
         replyMessage.setChatId(chatID);
 
         return replyMessage;

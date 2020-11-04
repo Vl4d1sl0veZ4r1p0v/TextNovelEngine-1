@@ -9,12 +9,12 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.Keyboard
 import java.util.ArrayList;
 import java.util.List;
 
-public class TelegramMessageButtonsFrontend implements IO {
+public class TelegramIO implements IO {
     private SendMessage sendMessage;
     private String CurrentUserAnswer;
     private ArrayList<String> messagesList;
 
-    public TelegramMessageButtonsFrontend() {
+    public TelegramIO() {
         this.sendMessage = new SendMessage();
         messagesList = new ArrayList<>();
     }
