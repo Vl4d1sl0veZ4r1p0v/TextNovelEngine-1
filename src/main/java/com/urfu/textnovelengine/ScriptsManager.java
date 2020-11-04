@@ -24,8 +24,7 @@ public class ScriptsManager {
 
     private void ParseAllScripts(String[] scriptsNames) throws IOException {
         for (String name : scriptsNames) {
-            System.out.println(name);
-            Scripts.put(name, new Script(ScriptParser.parse(name)));
+            Scripts.put(name, ScriptParser.parse(name));
         }
     }
 

@@ -1,6 +1,7 @@
 package com.urfu.textnovelengine.parsers;
 
 import com.urfu.textnovelengine.DialogNode;
+import com.urfu.textnovelengine.Script;
 import com.urfu.textnovelengine.SimpleTalker;
 import com.urfu.textnovelengine.backendapi.Talker;
 
@@ -10,7 +11,7 @@ import java.nio.file.Files;
 import java.util.HashMap;
 
 public class ScriptParser {
-    public static DialogNode[] parse(String scriptName) throws IOException {
+    public static Script parse(String scriptName) throws IOException {
         ClassLoader classLoader = ClassLoader.getSystemClassLoader();
         File file = new File(classLoader.getResource(scriptName + ".sc").getFile());
 
@@ -51,7 +52,7 @@ public class ScriptParser {
 
         }
 
-        return nodes;
+        return new Script(nodes);
     }
 }
 
