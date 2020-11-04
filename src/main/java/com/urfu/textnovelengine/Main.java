@@ -16,11 +16,12 @@ public class Main {
 
         var testUserID = 1;
 
+        io.printMessage("Для начала наберите: start");
         backend.UpdateUser(testUserID, io);
         var user = backend.Users.getUser(testUserID);
-        while (user.hasRunningScript()) {
+        do {
             backend.UpdateUser(testUserID, io);
-        }
+        } while (user.hasRunningScript());
     }
 
 }
