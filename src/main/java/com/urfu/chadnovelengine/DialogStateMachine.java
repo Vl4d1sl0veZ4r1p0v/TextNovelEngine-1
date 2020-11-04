@@ -55,15 +55,15 @@ public class DialogStateMachine {
             case "/help":
                 io.printMessage(
                         """
-                                Напишите 'start', чтобы начать диалог. 
+                                Напишите 'start', чтобы начать диалог.
                                 Чтобы ответить, наберите число перед выбранным ответом.
-                                Напишите 'repeat', чтобы повторить последнее сообщение. 
+                                Напишите 'repeat', чтобы повторить последнее сообщение.
                                 Напишите 'exit', чтобы прервать текущий сюжет.
                                 """);
                 return;
         }
 
-        var answerIndex = MathTools.getAnswerIndex(answer, answers);
+        var answerIndex = io.getAnswerIndex(answer, answers);
         if (answerIndex == -1) {
             io.printMessage(talker.wrongInputReaction());
             return;

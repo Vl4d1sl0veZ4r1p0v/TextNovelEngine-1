@@ -1,6 +1,7 @@
 package com.urfu.chadnovelengine.frontend;
 
 import com.urfu.chadnovelengine.backendapi.IO;
+import com.urfu.chadnovelengine.MathTools;
 
 import java.io.InputStream;
 import java.util.Scanner;
@@ -30,6 +31,11 @@ public class ConsoleFrontend implements IO {
     @Override
     public String getUserAnswer() {
         return console.nextLine();
+    }
+
+    @Override
+    public int getAnswerIndex(String answer, String[] answers) {
+        return MathTools.isValidAnswer(answer, answers.length) ? Integer.parseInt(answer) - 1 : -1;
     }
 
     private void printArrayWithIndices(String[] array) {

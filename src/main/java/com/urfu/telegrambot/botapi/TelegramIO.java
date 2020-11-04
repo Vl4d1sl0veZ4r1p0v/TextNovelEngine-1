@@ -44,6 +44,17 @@ public class TelegramIO implements IO {
         return CurrentUserAnswer;
     }
 
+    @Override
+    public static int getAnswerIndex(String answer, String[] answers) {
+        for (var i = 0; i < answers.length; ++i) {
+            if (answer.equals(answers[i])) {
+                return i;
+            }
+        }
+
+        return -1;
+    }
+
     public void setUserAnswer(String answer) {
         CurrentUserAnswer = answer;
     }

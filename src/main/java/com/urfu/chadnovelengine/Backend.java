@@ -16,12 +16,8 @@ public class Backend {
     }
 
     public void UpdateUser(int userID, IO io) {
-        var user = Users.getUser(userID);
         var scriptsNames = Scripts.getAllScriptsNames();
-
-        if (user == null) {
-            user = Users.addUser(userID);
-        }
+        var user = Users.isUserRegistered(userID) ? Users.getUser(userID) : Users.addUser(userID);
 
         if (user.hasRunningScript()) {
             checkContinuity(

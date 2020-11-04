@@ -11,16 +11,6 @@ public class MathTools {
         return false;
     }
 
-    public static int getAnswerIndex(String answer, String[] availableAnswers) {
-        for (var i = 0; i < availableAnswers.length; ++i) {
-            if (answer.equals(availableAnswers[i])) {
-                return i;
-            }
-        }
-
-        return -1;
-    }
-
     public static boolean isInteger(String line) {
         if (line == null || line.length() == 0) {
             return false;

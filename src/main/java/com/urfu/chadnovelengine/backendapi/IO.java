@@ -8,4 +8,6 @@ public interface IO {
     void printExistingScriptsNames(String[] scriptsNames);
 
     String getUserAnswer();
+
+    int getAnswerIndex(String answer, String[] answers);
 }
