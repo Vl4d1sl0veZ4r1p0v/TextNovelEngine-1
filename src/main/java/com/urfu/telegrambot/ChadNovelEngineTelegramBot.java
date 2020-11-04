@@ -9,6 +9,7 @@ import org.telegram.telegrambots.bots.TelegramWebhookBot;
 import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
+import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 import java.io.IOException;
 
@@ -24,7 +25,6 @@ public class ChadNovelEngineTelegramBot extends TelegramWebhookBot {
         chadNovelEngineBackend = new Backend();
     }
 
-    @SneakyThrows
     @Override
     public BotApiMethod<?> onWebhookUpdateReceived(Update update) {
         Message message = update.getMessage();
@@ -40,14 +40,20 @@ public class ChadNovelEngineTelegramBot extends TelegramWebhookBot {
         log.info("New message from User: {}, userId: {}, chatId: {}, with text: {}",
                 userName, userID, chatID, messageText);
 
-        var io = new TelegramIO();
-        io.setUserAnswer(messageText);
-        chadNovelEngineBackend.UpdateUser(userID, io);
+        try {
+            var io = new TelegramIO();
+            io.setUserAnswer(messageText);
+            chadNovelEngineBackend.UpdateUser(userID, io);
 
-        var replyMessage = io.makeMessage();
-        replyMessage.setChatId(chatID);
+            var replyMessage = io.makeMessage();
+            replyMessage.setChatId(chatID);
 
-        return replyMessage;
+            return replyMessage;
+        } catch (Exception ex) {
+            log.error(ex.toString());
+        }
+
+        return null;
     }
 
     @Override
@@ -76,6 +82,4 @@ public class ChadNovelEngineTelegramBot extends TelegramWebhookBot {
     public void setBotUsername(String botUsername) {
         this.botUsername = botUsername;
     }
-
-
 }

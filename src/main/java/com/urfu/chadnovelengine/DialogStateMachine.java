@@ -32,9 +32,7 @@ public class DialogStateMachine {
             return false;
         }
 
-        io.printMessage("Что ответишь?");
         io.printPossibleAnswers(answers);
-        io.printMessage("цифра ответа: ");
 
         return true;
     }
@@ -65,13 +63,14 @@ public class DialogStateMachine {
                 return;
         }
 
-        if (!MathTools.isValidAnswer(answer, answers.length)) {
+        var answerIndex = MathTools.getAnswerIndex(answer, answers);
+        if (answerIndex == -1) {
             io.printMessage(talker.wrongInputReaction());
             return;
         }
 
         var responses = currentNode.getResponses();
-        user.setCurrentNodeIndex(responses[Integer.parseInt(answer) - 1]);
+        user.setCurrentNodeIndex(responses[answerIndex]);
     }
 
 }

@@ -11,8 +11,10 @@ public class UserManager {
         users = new HashMap<>();
     }
 
-    public void addUser(int id) {
-        users.put(id, new User(id));
+    public User addUser(int id) {
+        var newUser = new User(id);
+        users.put(id, newUser);
+        return newUser;
     }
 
     public User getUser(int id) {

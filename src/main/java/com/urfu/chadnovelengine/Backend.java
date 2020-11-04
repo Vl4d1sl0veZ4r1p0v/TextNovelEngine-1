@@ -17,6 +17,10 @@ public class Backend {
 
     public void UpdateUser(int userID, IO io) {
         var user = Users.getUser(userID);
+        if (user == null) {
+            user = Users.addUser(userID);
+        }
+
         if (user.hasRunningScript()) {
             DialogStateMachine.Update(user, Scripts, io);
         } else {

@@ -62,4 +62,8 @@ public class TelegramIO implements IO {
         replyKeyboardMarkup.setKeyboard(keyboard);
         sendMessage.setReplyMarkup(replyKeyboardMarkup);
     }
+
+    public void ClearButtons() {
+
+    }
 }
