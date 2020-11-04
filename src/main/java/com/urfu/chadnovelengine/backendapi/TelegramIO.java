@@ -1,4 +1,4 @@
-package ru.urfu.chadnovelengine.backendapi;
+package com.urfu.chadnovelengine.backendapi;
 
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 

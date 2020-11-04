@@ -1,13 +1,10 @@
-package ru.urfu.chadnovelengine.frontend;
+package com.urfu.chadnovelengine.frontend;
 
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
-import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMarkup;
-import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardButton;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardRow;
-import ru.urfu.chadnovelengine.backendapi.IO;
-import ru.urfu.chadnovelengine.backendapi.TelegramIO;
+import com.urfu.chadnovelengine.backendapi.TelegramIO;
 
 import java.util.ArrayList;
 import java.util.List;

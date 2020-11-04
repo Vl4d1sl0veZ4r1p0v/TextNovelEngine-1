@@ -1,4 +1,4 @@
-package ru.urfu.chadnovelengine.botapi;
+package com.urfu.telegrambot.botapi;
 
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
@@ -11,7 +11,7 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMar
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardButton;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardRow;
 import ru.urfu.chadnovelengine.Script;
-import ru.urfu.chadnovelengine.frontend.TelegramMessageButtonsFrontend;
+import com.urfu.chadnovelengine.frontend.TelegramMessageButtonsFrontend;
 
 import java.io.File;
 import java.io.IOException;

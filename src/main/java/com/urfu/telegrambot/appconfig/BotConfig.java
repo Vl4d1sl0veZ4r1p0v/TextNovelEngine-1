@@ -1,4 +1,4 @@
-package ru.urfu.chadnovelengine.appconfig;
+package com.urfu.telegrambot.appconfig;
 
 
 import lombok.Getter;
@@ -8,8 +8,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.telegram.telegrambots.bots.DefaultBotOptions;
 import org.telegram.telegrambots.meta.ApiContext;
-import ru.urfu.chadnovelengine.ChadNovelEngineTelegramBot;
-import ru.urfu.chadnovelengine.botapi.TelegramFacade;
+import com.urfu.telegrambot.ChadNovelEngineTelegramBot;
+import com.urfu.telegrambot.botapi.TelegramFacade;
 
 @Getter
 @Setter

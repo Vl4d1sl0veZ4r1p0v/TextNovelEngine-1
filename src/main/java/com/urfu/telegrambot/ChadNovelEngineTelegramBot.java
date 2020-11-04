@@ -1,13 +1,11 @@
-package ru.urfu.chadnovelengine;
+package com.urfu.telegrambot;
 
 import lombok.SneakyThrows;
 import org.telegram.telegrambots.bots.DefaultBotOptions;
 import org.telegram.telegrambots.bots.TelegramWebhookBot;
 import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
-import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
-import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
-import ru.urfu.chadnovelengine.botapi.TelegramFacade;
+import com.urfu.telegrambot.botapi.TelegramFacade;
 
 public class ChadNovelEngineTelegramBot extends TelegramWebhookBot {
     private String webHookPath;

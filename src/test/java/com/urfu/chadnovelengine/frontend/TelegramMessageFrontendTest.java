@@ -1,4 +1,4 @@
-package ru.urfu.chadnovelengine.frontend;
+package com.urfu.chadnovelengine.frontend;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

@@ -1,4 +1,4 @@
-package ru.urfu.chadnovelengine;
+package com.urfu.chadnovelengine;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

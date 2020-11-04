@@ -1,7 +1,7 @@
-package ru.urfu.chadnovelengine.frontend;
+package com.urfu.chadnovelengine.frontend;
 
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
-import ru.urfu.chadnovelengine.backendapi.TelegramIO;
+import com.urfu.chadnovelengine.backendapi.TelegramIO;
 
 public class TelegramMessageFrontend implements TelegramIO {
     private SendMessage sendMessage;
