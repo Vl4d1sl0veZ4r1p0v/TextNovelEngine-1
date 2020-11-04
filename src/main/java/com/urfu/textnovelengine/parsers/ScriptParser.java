@@ -10,7 +10,7 @@ import java.nio.file.Files;
 import java.util.HashMap;
 
 public class ScriptParser {
-    public static DialogNode parse(String scriptPath) throws IOException {
+    public static DialogNode[] parse(String scriptPath) throws IOException {
         ClassLoader classLoader = ClassLoader.getSystemClassLoader();
         File file = new File(classLoader.getResource(scriptPath).getFile());
 
@@ -32,37 +32,26 @@ public class ScriptParser {
                 var newNode = new DialogNode();
                 newNode.setTalker(talkers.get(text.get(++i).split(": ")[1]));
                 newNode.setMessage(text.get(++i).split(": ")[1]);
+                var answersAmount = Integer.parseInt(text.get(++i).split(": ")[1]);
+                if (answersAmount != 0) {
+                    var answers = new String[answersAmount];
+                    var responses = new int[answersAmount];
+                    for (var k = 0; k < answersAmount; k++) {
+                        var bufferLine = text.get(++i).split(": ");
+                        responses[k] = Integer.parseInt(bufferLine[0]);
+                        answers[k] = bufferLine[1];
+                    }
+
+                    newNode.setAnswers(answers);
+                    newNode.setResponses(responses);
+                }
 
                 nodes[nodeIndex++] = newNode;
             }
 
         }
 
-        for (int i = 2, nodeIndex = 0; i < text.size(); i++) {
-            var buffer = text.get(i).split(": ");
-            if (buffer[0].equals("answers_amount")) {
-                var node = nodes[nodeIndex++];
-                var answersAmount = Integer.parseInt(buffer[1]);
-                if (answersAmount == 0) {
-                    continue;
-                }
-
-                var responseNodes = new DialogNode[answersAmount];
-                var answers = new String[answersAmount];
-
-                for (var k = 0; k < answersAmount; k++) {
-                    var bufferLine = text.get(++i).split(": ");
-                    responseNodes[k] = nodes[Integer.parseInt(bufferLine[0])];
-                    answers[k] = bufferLine[1];
-                }
-
-                node.setAnswers(answers);
-                node.setResponses(responseNodes);
-            }
-
-        }
-
-        return nodes[0];
+        return nodes;
     }
 }
 

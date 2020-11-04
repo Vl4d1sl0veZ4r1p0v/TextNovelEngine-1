@@ -13,8 +13,8 @@ public class Main {
     }
 
     public static void run(String scriptName, IO io) throws IOException {
-        var scriptStartNode = ScriptParser.parse(scriptName);
-        var script = new Script(scriptStartNode);
+        var scriptNodes = ScriptParser.parse(scriptName);
+        var script = new Script(scriptNodes);
         var doesContinue = script.StartDialog(io);
 
         while (doesContinue) {

@@ -5,10 +5,11 @@ import com.urfu.textnovelengine.backendapi.IO;
 import java.util.ArrayList;
 
 public class Script {
-    private DialogNode currentNode;
+    private final DialogNode[] Nodes;
+    private int CurrentNodeIndex;
 
-    public Script(DialogNode startNode) {
-        this.currentNode = startNode;
+    public Script(DialogNode[] scriptNodes) {
+        Nodes = scriptNodes;
     }
 
     public boolean StartDialog(IO io) {
@@ -21,6 +22,7 @@ public class Script {
     }
 
     private boolean PrintResponse(IO io) {
+        var currentNode = Nodes[CurrentNodeIndex];
         var answers = currentNode.getAnswers();
         var talker = currentNode.getTalker();
 
@@ -39,6 +41,7 @@ public class Script {
     }
 
     private void CheckAnswer(IO io) {
+        var currentNode = Nodes[CurrentNodeIndex];
         var answer = io.getUserAnswer();
         var answers = currentNode.getAnswers();
         var talker = currentNode.getTalker();
@@ -63,8 +66,8 @@ public class Script {
             return;
         }
 
-        var answerIndex = Integer.parseInt(answer) - 1;
-        currentNode = currentNode.getResponses()[answerIndex];
+        var responses = currentNode.getResponses();
+        CurrentNodeIndex = responses[Integer.parseInt(answer) - 1];
     }
 
     private String[] getPossibleReplies(String[] answers) {

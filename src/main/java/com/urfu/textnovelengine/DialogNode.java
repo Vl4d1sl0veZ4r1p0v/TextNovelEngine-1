@@ -6,7 +6,7 @@ public class DialogNode {
     private Talker talker;
     private String message;
     private String[] answers;
-    private DialogNode[] responses;
+    private int[] responses;
 
     public Talker getTalker() {
         return talker;
@@ -32,11 +32,11 @@ public class DialogNode {
         this.answers = answers;
     }
 
-    public DialogNode[] getResponses() {
+    public int[] getResponses() {
         return responses;
     }
 
-    public void setResponses(DialogNode[] responses) {
+    public void setResponses(int[] responses) {
         this.responses = responses;
     }
 }
