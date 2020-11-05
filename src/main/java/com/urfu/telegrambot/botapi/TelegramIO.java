@@ -1,14 +1,28 @@
 package com.urfu.telegrambot.botapi;
 
 import com.urfu.chadnovelengine.backendapi.IO;
+import com.urfu.telegrambot.ChadNovelEngineTelegramBot;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.context.annotation.PropertySource;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardButton;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardRow;
 
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.*;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
+@Slf4j
+@PropertySource("classpath:application.properties")
 public class TelegramIO implements IO {
     private SendMessage sendMessage;
     private String CurrentUserAnswer;
@@ -19,9 +33,32 @@ public class TelegramIO implements IO {
         messagesList = new ArrayList<>();
     }
 
-    public SendMessage makeMessage() {
-        sendMessage.setText(String.join("\n", messagesList));
-        return sendMessage;
+    private static String encodeValue(String value) {
+        try {
+            return URLEncoder.encode(value, StandardCharsets.UTF_8.toString());
+        } catch (UnsupportedEncodingException ex) {
+            throw new RuntimeException(ex.getCause());
+        }
+    }
+
+    public SendMessage makeMessage(long chatID) {
+        try {
+            HttpClient client = HttpClient.newHttpClient();
+            for (var i = 0; i < messagesList.size() - 1; ++i) {
+                HttpRequest request = HttpRequest.newBuilder()
+                        .uri(new URI("https://api.telegram.org/bot1447217539:AAFCHgFAyL7K9qNkMh9xZgdj_r8kICWAPyk/sendmessage?chat_id=" + chatID + "&text=" + encodeValue(messagesList.get(i))))
+                        .GET()
+                        .build();
+                HttpResponse<String> response = client
+                        .send(request, HttpResponse.BodyHandlers.ofString());
+                log.info(response.body());
+            }
+        } catch (URISyntaxException | IOException | InterruptedException e) {
+            e.printStackTrace();
+        }
+        return sendMessage
+                .setText(messagesList.get(messagesList.size() - 1))
+                .setChatId(chatID);
     }
 
     @Override
@@ -45,7 +82,7 @@ public class TelegramIO implements IO {
     }
 
     @Override
-    public static int getAnswerIndex(String answer, String[] answers) {
+    public int getAnswerIndex(String answer, String[] answers) {
         for (var i = 0; i < answers.length; ++i) {
             if (answer.equals(answers[i])) {
                 return i;

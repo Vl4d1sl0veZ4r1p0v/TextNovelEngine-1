@@ -10,6 +10,11 @@ import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
 
 @Slf4j
 public class ChadNovelEngineTelegramBot extends TelegramWebhookBot {
@@ -43,8 +48,7 @@ public class ChadNovelEngineTelegramBot extends TelegramWebhookBot {
             io.setUserAnswer(messageText);
             chadNovelEngineBackend.UpdateUser(userID, io);
 
-            var replyMessage = io.makeMessage();
-            replyMessage.setChatId(chatID);
+            var replyMessage = io.makeMessage(chatID);
 
             return replyMessage;
         } catch (Exception ex) {
