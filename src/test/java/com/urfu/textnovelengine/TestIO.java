@@ -2,31 +2,37 @@ package com.urfu.textnovelengine;
 
 import com.urfu.textnovelengine.backendapi.IO;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class TestIO implements IO {
-    private String[] testAnswers;
-    private String[] returnedAnswers;
-    private int currentAnswer;
+    private String[] repliesFromUser;
+    private List<String> talkerMessages;
+    private int currentReply;
 
     public TestIO(String[] testAnswers) {
-        this.testAnswers = testAnswers;
-        currentAnswer = 0;
+        this.repliesFromUser = testAnswers;
+        this.talkerMessages = new ArrayList<>();
+        currentReply = 0;
     }
 
     @Override
     public void printMessage(String message) {
+        talkerMessages.add(message);
     }
 
     @Override
     public void printPossibleAnswers(String[] answers) {
-        returnedAnswers = answers;
+        for (var i = 0; i < answers.length; ++i)
+            talkerMessages.add(answers[i]);
     }
 
-    public String[] getReturnedAnswers() {
-        return returnedAnswers;
+    public List<String> getTalkerMessages() {
+        return talkerMessages;
     }
 
     @Override
     public String getUserAnswer() {
-        return testAnswers[currentAnswer++];
+        return repliesFromUser[currentReply++];
     }
 }
