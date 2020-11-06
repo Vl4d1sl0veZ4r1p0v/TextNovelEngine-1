@@ -11,7 +11,7 @@ public class ScriptsManager {
 
     public ScriptsManager() throws IOException {
         Scripts = new HashMap<>();
-        ParseAllScripts(getScriptsNames());
+        parseAllScripts(getScriptsNames());
     }
 
     private String[] getScriptsNames() throws IOException {
@@ -21,7 +21,7 @@ public class ScriptsManager {
         return text.toArray(new String[0]);
     }
 
-    private void ParseAllScripts(String[] scriptsNames) throws IOException {
+    private void parseAllScripts(String[] scriptsNames) throws IOException {
         for (String name : scriptsNames) {
             Scripts.put(name, ScriptParser.parse(name));
         }

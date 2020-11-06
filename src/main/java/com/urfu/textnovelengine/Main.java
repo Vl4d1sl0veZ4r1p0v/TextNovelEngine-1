@@ -18,9 +18,9 @@ public class Main {
         var testUser = new User(1);
         testUser.setNewScript(scriptName);
 
-        var doesContinue = dialogMachine.StartDialog(testUser, io);
+        var doesContinue = dialogMachine.startDialog(testUser, io);
         while (doesContinue) {
-            doesContinue = dialogMachine.Update(testUser, io);
+            doesContinue = dialogMachine.update(testUser, io);
         }
     }
 
