@@ -15,6 +15,8 @@ import java.net.URISyntaxException;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.util.ArrayList;
+import java.util.List;
 
 @Slf4j
 public class ChadNovelEngineTelegramBot extends TelegramWebhookBot {
@@ -22,10 +24,12 @@ public class ChadNovelEngineTelegramBot extends TelegramWebhookBot {
     private String botToken;
     private String botUsername;
     private final Backend chadNovelEngineBackend;
+    private List<CharacterTelegramBot> characterTelegramBots;
 
     public ChadNovelEngineTelegramBot(DefaultBotOptions botOptions) throws IOException {
         super(botOptions);
         chadNovelEngineBackend = new Backend();
+        characterTelegramBots = new ArrayList<>();
     }
 
     @Override
@@ -39,6 +43,7 @@ public class ChadNovelEngineTelegramBot extends TelegramWebhookBot {
         var userID = message.getFrom().getId();
         var chatID = message.getChatId();
         var messageText = message.getText();
+
 
         log.info("New message from User: {}, userId: {}, chatId: {}, with text: {}",
                 userName, userID, chatID, messageText);
@@ -83,5 +88,9 @@ public class ChadNovelEngineTelegramBot extends TelegramWebhookBot {
 
     public void setBotUsername(String botUsername) {
         this.botUsername = botUsername;
+    }
+
+    public void addCharacterBot(CharacterTelegramBot characterTelegramBot){
+        characterTelegramBots.add(characterTelegramBot);
     }
 }
