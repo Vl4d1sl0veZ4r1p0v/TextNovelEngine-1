@@ -1,7 +1,5 @@
 package com.urfu.textnovelengine;
 
-import com.urfu.textnovelengine.backendapi.User;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;

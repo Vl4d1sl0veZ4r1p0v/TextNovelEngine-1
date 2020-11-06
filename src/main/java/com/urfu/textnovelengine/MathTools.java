@@ -1,6 +1,5 @@
 package com.urfu.textnovelengine;
 
-
 public class MathTools {
 
     public static boolean isValidAnswer(String answer, int answersAmount) {

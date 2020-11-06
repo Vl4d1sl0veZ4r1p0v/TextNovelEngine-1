@@ -1,7 +1,6 @@
 package com.urfu.textnovelengine;
 
 import com.urfu.textnovelengine.backendapi.User;
-
 import java.util.HashMap;
 
 public class UserManager {

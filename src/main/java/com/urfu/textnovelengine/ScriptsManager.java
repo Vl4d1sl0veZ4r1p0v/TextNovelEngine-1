@@ -1,7 +1,6 @@
 package com.urfu.textnovelengine;
 
 import com.urfu.textnovelengine.parsers.ScriptParser;
-
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;

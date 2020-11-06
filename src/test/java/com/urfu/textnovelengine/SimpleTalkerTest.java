@@ -1,6 +1,5 @@
 package com.urfu.textnovelengine;
 
-import com.urfu.textnovelengine.backendapi.Talker;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

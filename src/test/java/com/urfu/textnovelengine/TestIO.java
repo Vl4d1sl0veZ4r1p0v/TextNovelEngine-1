@@ -1,7 +1,6 @@
 package com.urfu.textnovelengine;
 
 import com.urfu.textnovelengine.backendapi.IO;
-
 import java.util.ArrayList;
 import java.util.List;
 

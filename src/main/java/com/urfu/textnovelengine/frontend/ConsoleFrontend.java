@@ -1,7 +1,6 @@
 package com.urfu.textnovelengine.frontend;
 
 import com.urfu.textnovelengine.backendapi.IO;
-
 import java.io.InputStream;
 import java.util.Scanner;
 

@@ -1,9 +1,8 @@
 package com.urfu.textnovelengine;
 
-import com.urfu.textnovelengine.backendapi.User;
 import com.urfu.textnovelengine.backendapi.IO;
+import com.urfu.textnovelengine.backendapi.User;
 import com.urfu.textnovelengine.frontend.ConsoleFrontend;
-
 import java.io.IOException;
 
 public class Main {

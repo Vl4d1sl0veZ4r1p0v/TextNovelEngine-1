@@ -4,7 +4,6 @@ import com.urfu.textnovelengine.DialogNode;
 import com.urfu.textnovelengine.Script;
 import com.urfu.textnovelengine.SimpleTalker;
 import com.urfu.textnovelengine.backendapi.Talker;
-
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
