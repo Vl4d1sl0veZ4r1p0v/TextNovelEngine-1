@@ -31,7 +31,7 @@ public class DialogStateMachine {
 
         io.printMessage((talker.talk(currentNode.getMessage())));
 
-        if (answers == null) {
+        if (null == answers) {
             user.clearCurrentScript();
             io.printMessage("Сюжет окончен");
             return false;
@@ -55,10 +55,8 @@ public class DialogStateMachine {
                 user.clearCurrentScript();
                 io.printMessage("Выход");
                 return;
-
             case "repeat":
                 return;
-
             case "help":
                 io.printMessage(
                         """

@@ -1,12 +1,11 @@
 package com.urfu.textnovelengine;
 
-import static org.junit.jupiter.api.Assertions.*;
-
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 class SimpleTalkerTest {
-    SimpleTalker talker;
+    private SimpleTalker talker;
 
     @BeforeEach
     void init() {
@@ -15,11 +14,11 @@ class SimpleTalkerTest {
 
     @Test
     void talkTest() {
-        assertEquals("Test: Hey", talker.talk("Hey"));
+        Assertions.assertEquals("Test: Hey", talker.talk("Hey"));
     }
 
     @Test
     void wrongInputReactionTest() {
-        assertEquals("Test: Test?", talker.wrongInputReaction());
+        Assertions.assertEquals("Test: Test?", talker.wrongInputReaction());
     }
 }

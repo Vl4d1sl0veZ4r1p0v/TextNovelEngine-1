@@ -2,6 +2,7 @@ package com.urfu.textnovelengine;
 
 import com.urfu.textnovelengine.backendapi.IO;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class TestIO implements IO {
@@ -10,8 +11,8 @@ public class TestIO implements IO {
     private int currentReply;
 
     public TestIO(String[] testAnswers) {
-        this.repliesFromUser = testAnswers;
-        this.talkerMessages = new ArrayList<>();
+        repliesFromUser = testAnswers;
+        talkerMessages = new ArrayList<>();
         currentReply = 0;
     }
 
@@ -22,8 +23,7 @@ public class TestIO implements IO {
 
     @Override
     public void printPossibleAnswers(String[] answers) {
-        for (var i = 0; i < answers.length; ++i)
-            talkerMessages.add(answers[i]);
+        talkerMessages.addAll(Arrays.asList(answers));
     }
 
     public List<String> getTalkerMessages() {

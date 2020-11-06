@@ -1,13 +1,12 @@
 package com.urfu.textnovelengine.backendapi;
 
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 class UserTest {
 
-    User user;
+    private User user;
 
     @BeforeEach
     void init(){
@@ -18,7 +17,7 @@ class UserTest {
     void testSetterGetterCurrentScript() {
         String expected = "test";
         user.setNewScript(expected);
-        assertEquals(expected, user.getCurrentScript());
+        Assertions.assertEquals(expected, user.getCurrentScript());
     }
 
     @Test
@@ -26,18 +25,18 @@ class UserTest {
         String expected = "test";
         user.setNewScript(expected);
         user.clearCurrentScript();
-        assertNull(user.getCurrentScript());
+        Assertions.assertNull(user.getCurrentScript());
     }
 
     @Test
     void isCurrentScriptExist() {
-        assertFalse(user.isCurrentScriptExist());
+        Assertions.assertFalse(user.isCurrentScriptExist());
     }
 
     @Test
     void testGetterSetterCurrentNodeIndex() {
         int expected = 1;
         user.setCurrentNodeIndex(expected);
-        assertEquals(expected, user.getCurrentNodeIndex());
+        Assertions.assertEquals(expected, user.getCurrentNodeIndex());
     }
 }

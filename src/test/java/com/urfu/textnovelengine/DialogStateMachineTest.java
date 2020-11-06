@@ -1,9 +1,8 @@
 package com.urfu.textnovelengine;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 import com.urfu.textnovelengine.backendapi.User;
 import java.io.IOException;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 class DialogStateMachineTest {
@@ -24,7 +23,7 @@ class DialogStateMachineTest {
                 "A: THE END",
                 "Сюжет окончен"
         };
-        String[] replies = new String[] { "1", "1"};
+        String[] replies = { "1", "1"};
 
         var testIO = new TestIO(replies);
         var scriptsManager = new ScriptsManager();
@@ -33,10 +32,10 @@ class DialogStateMachineTest {
         var testUser = new User(1);
         testUser.setNewScript(testScript);
 
-        assertTrue(dialogMachine.StartDialog(testUser, testIO));
-        assertTrue(dialogMachine.Update(testUser, testIO));
-        assertFalse(dialogMachine.Update(testUser, testIO));
-        assertArrayEquals(expectedTalkerMessages, testIO.getTalkerMessages().toArray());
+        Assertions.assertTrue(dialogMachine.StartDialog(testUser, testIO));
+        Assertions.assertTrue(dialogMachine.Update(testUser, testIO));
+        Assertions.assertFalse(dialogMachine.Update(testUser, testIO));
+        Assertions.assertArrayEquals(expectedTalkerMessages, testIO.getTalkerMessages().toArray());
     }
 
 
@@ -83,22 +82,22 @@ class DialogStateMachineTest {
 
         var firstUser = new User(1);
         var secondUser = new User(2);
-        //
+
         firstUser.setNewScript(testScript);
         secondUser.setNewScript(testScript);
         firstUser.setCurrentNodeIndex(3);
         secondUser.setCurrentNodeIndex(3);
-        //first
 
-        assertTrue(dialogMachine.StartDialog(firstUser, testIOFirstUser));
-        assertFalse(dialogMachine.Update(firstUser, testIOFirstUser));
-        assertArrayEquals(expectedReturnedAnswersFirstUser, testIOFirstUser.getTalkerMessages().toArray());
+        //first
+        Assertions.assertTrue(dialogMachine.StartDialog(firstUser, testIOFirstUser));
+        Assertions.assertFalse(dialogMachine.Update(firstUser, testIOFirstUser));
+        Assertions.assertArrayEquals(expectedReturnedAnswersFirstUser, testIOFirstUser.getTalkerMessages().toArray());
 
         //second
-        assertTrue(dialogMachine.StartDialog(secondUser, testIOSecondUser));
-        assertTrue(dialogMachine.Update(secondUser, testIOSecondUser));
-        assertFalse(dialogMachine.Update(secondUser, testIOSecondUser));
-        assertArrayEquals(expectedReturnedAnswersSecondUser, testIOSecondUser.getTalkerMessages().toArray());
+        Assertions.assertTrue(dialogMachine.StartDialog(secondUser, testIOSecondUser));
+        Assertions.assertTrue(dialogMachine.Update(secondUser, testIOSecondUser));
+        Assertions.assertFalse(dialogMachine.Update(secondUser, testIOSecondUser));
+        Assertions.assertArrayEquals(expectedReturnedAnswersSecondUser, testIOSecondUser.getTalkerMessages().toArray());
     }
 
     @Test
@@ -148,24 +147,24 @@ class DialogStateMachineTest {
 
         var firstUser = new User(1);
         var secondUser = new User(2);
-        //
+
         firstUser.setNewScript(testScript);
         secondUser.setNewScript(testScript);
         firstUser.setCurrentNodeIndex(2);
         secondUser.setCurrentNodeIndex(2);
-        //first
 
-        assertTrue(dialogMachine.StartDialog(firstUser, testIOFirstUser));
-        assertTrue(dialogMachine.Update(firstUser, testIOFirstUser));
-        assertFalse(dialogMachine.Update(firstUser, testIOFirstUser));
-        assertArrayEquals(expectedReturnedAnswersFirstUser, testIOFirstUser.getTalkerMessages().toArray());
+        //first
+        Assertions.assertTrue(dialogMachine.StartDialog(firstUser, testIOFirstUser));
+        Assertions.assertTrue(dialogMachine.Update(firstUser, testIOFirstUser));
+        Assertions.assertFalse(dialogMachine.Update(firstUser, testIOFirstUser));
+        Assertions.assertArrayEquals(expectedReturnedAnswersFirstUser, testIOFirstUser.getTalkerMessages().toArray());
 
 
         //second
-        assertTrue(dialogMachine.StartDialog(secondUser, testIOSecondUser));
-        assertTrue(dialogMachine.Update(secondUser, testIOSecondUser));
-        assertFalse(dialogMachine.Update(secondUser, testIOSecondUser));
-        assertArrayEquals(expectedReturnedAnswersSecondUser, testIOSecondUser.getTalkerMessages().toArray());
+        Assertions.assertTrue(dialogMachine.StartDialog(secondUser, testIOSecondUser));
+        Assertions.assertTrue(dialogMachine.Update(secondUser, testIOSecondUser));
+        Assertions.assertFalse(dialogMachine.Update(secondUser, testIOSecondUser));
+        Assertions.assertArrayEquals(expectedReturnedAnswersSecondUser, testIOSecondUser.getTalkerMessages().toArray());
     }
 
     @Test
@@ -240,35 +239,35 @@ class DialogStateMachineTest {
         var firstUser = new User(1);
         var secondUser = new User(2);
         var thirdUser = new User(3);
-        //
+
         firstUser.setNewScript(testScript);
         secondUser.setNewScript(testScript);
         thirdUser.setNewScript(testScript);
         firstUser.setCurrentNodeIndex(6);
         secondUser.setCurrentNodeIndex(6);
         thirdUser.setCurrentNodeIndex(6);
-        //first
 
-        assertTrue(dialogMachine.StartDialog(firstUser, testIOFirstUser));
-        assertTrue(dialogMachine.Update(firstUser, testIOFirstUser));
-        assertTrue(dialogMachine.Update(firstUser, testIOFirstUser));
+        //first
+        Assertions.assertTrue(dialogMachine.StartDialog(firstUser, testIOFirstUser));
+        Assertions.assertTrue(dialogMachine.Update(firstUser, testIOFirstUser));
+        Assertions.assertTrue(dialogMachine.Update(firstUser, testIOFirstUser));
         //System.out.println(testIOFirstUser.getTalkerMessages());
-        assertArrayEquals(expectedReturnedAnswersFirstUser, testIOFirstUser.getTalkerMessages().toArray());
+        Assertions.assertArrayEquals(expectedReturnedAnswersFirstUser, testIOFirstUser.getTalkerMessages().toArray());
 
 
         //second
-        assertTrue(dialogMachine.StartDialog(secondUser, testIOSecondUser));
-        assertTrue(dialogMachine.Update(secondUser, testIOSecondUser));
-        assertTrue(dialogMachine.Update(secondUser, testIOSecondUser));
+        Assertions.assertTrue(dialogMachine.StartDialog(secondUser, testIOSecondUser));
+        Assertions.assertTrue(dialogMachine.Update(secondUser, testIOSecondUser));
+        Assertions.assertTrue(dialogMachine.Update(secondUser, testIOSecondUser));
         //System.out.println(testIOSecondUser.getTalkerMessages());
-        assertArrayEquals(expectedReturnedAnswersSecondUser, testIOSecondUser.getTalkerMessages().toArray());
+        Assertions.assertArrayEquals(expectedReturnedAnswersSecondUser, testIOSecondUser.getTalkerMessages().toArray());
 
         //third
-        assertTrue(dialogMachine.StartDialog(thirdUser, testIOThirdUser));
-        assertTrue(dialogMachine.Update(thirdUser, testIOThirdUser));
-        assertTrue(dialogMachine.Update(thirdUser, testIOThirdUser));
+        Assertions.assertTrue(dialogMachine.StartDialog(thirdUser, testIOThirdUser));
+        Assertions.assertTrue(dialogMachine.Update(thirdUser, testIOThirdUser));
+        Assertions.assertTrue(dialogMachine.Update(thirdUser, testIOThirdUser));
         System.out.println(testIOThirdUser.getTalkerMessages());
-        assertArrayEquals(expectedReturnedAnswersThirdUser, testIOThirdUser.getTalkerMessages().toArray());
+        Assertions.assertArrayEquals(expectedReturnedAnswersThirdUser, testIOThirdUser.getTalkerMessages().toArray());
     }
 
 }

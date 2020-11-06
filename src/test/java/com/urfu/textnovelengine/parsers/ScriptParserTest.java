@@ -1,10 +1,9 @@
 package com.urfu.textnovelengine.parsers;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 import com.urfu.textnovelengine.DialogNode;
 import com.urfu.textnovelengine.Script;
 import java.io.IOException;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 class ScriptParserTest {
@@ -17,20 +16,20 @@ class ScriptParserTest {
         DialogNode second = script.getNode(1);
         DialogNode third = script.getNode(2);
         DialogNode last = script.getNode(3);
-        assertAll(() -> assertEquals("HELLO", first.getMessage()),
-                () -> assertArrayEquals(new int[]{1, 2}, first.getResponses()),
-                () -> assertArrayEquals(new String[]{"YES", "NO"}, first.getAnswers())
+        Assertions.assertAll(() -> Assertions.assertEquals("HELLO", first.getMessage()),
+                () -> Assertions.assertArrayEquals(new int[]{1, 2}, first.getResponses()),
+                () -> Assertions.assertArrayEquals(new String[]{"YES", "NO"}, first.getAnswers())
         );
-        assertAll(() -> assertEquals("GO", second.getMessage()),
-                () -> assertArrayEquals(new int[]{3}, second.getResponses()),
-                () -> assertArrayEquals(new String[]{"OKAY"}, second.getAnswers())
+        Assertions.assertAll(() -> Assertions.assertEquals("GO", second.getMessage()),
+                () -> Assertions.assertArrayEquals(new int[]{3}, second.getResponses()),
+                () -> Assertions.assertArrayEquals(new String[]{"OKAY"}, second.getAnswers())
         );
-        assertAll(() -> assertEquals("BYE", third.getMessage()),
-                () -> assertArrayEquals(new int[]{3}, third.getResponses()),
-                () -> assertArrayEquals(new String[]{"GOODBYE"}, third.getAnswers())
+        Assertions.assertAll(() -> Assertions.assertEquals("BYE", third.getMessage()),
+                () -> Assertions.assertArrayEquals(new int[]{3}, third.getResponses()),
+                () -> Assertions.assertArrayEquals(new String[]{"GOODBYE"}, third.getAnswers())
         );
-        assertAll(() -> assertEquals("THE END", last.getMessage()),
-                () -> assertNull(last.getAnswers()));
+        Assertions.assertAll(() -> Assertions.assertEquals("THE END", last.getMessage()),
+                () -> Assertions.assertNull(last.getAnswers()));
     }
 
 

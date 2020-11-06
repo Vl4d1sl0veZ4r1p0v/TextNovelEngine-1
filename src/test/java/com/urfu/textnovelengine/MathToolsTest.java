@@ -1,7 +1,6 @@
 package com.urfu.textnovelengine;
 
-import static org.junit.jupiter.api.Assertions.*;
-
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 class MathToolsTest {
@@ -9,80 +8,80 @@ class MathToolsTest {
 
     @Test
     void isValidAnswerNotANumber() {
-        assertFalse(MathTools.isValidAnswer("ABVC", QuestionsAmount));
-        assertFalse(MathTools.isValidAnswer("12efqef", QuestionsAmount));
-        assertFalse(MathTools.isValidAnswer("9iq", QuestionsAmount));
-        assertFalse(MathTools.isValidAnswer("    ", QuestionsAmount));
+        Assertions.assertFalse(MathTools.isValidAnswer("ABVC", QuestionsAmount));
+        Assertions.assertFalse(MathTools.isValidAnswer("12efqef", QuestionsAmount));
+        Assertions.assertFalse(MathTools.isValidAnswer("9iq", QuestionsAmount));
+        Assertions.assertFalse(MathTools.isValidAnswer("    ", QuestionsAmount));
     }
 
     @Test
     void isValidAnswerEmptyString() {
-        assertFalse(MathTools.isValidAnswer("", QuestionsAmount));
+        Assertions.assertFalse(MathTools.isValidAnswer("", QuestionsAmount));
     }
 
     @Test
     void isValidAnswerNull() {
-        assertFalse(MathTools.isValidAnswer(null, QuestionsAmount));
+        Assertions.assertFalse(MathTools.isValidAnswer(null, QuestionsAmount));
     }
 
     @Test
     void isValidAnswerLessThanOne() {
-        assertFalse(MathTools.isValidAnswer("-100", QuestionsAmount));
-        assertFalse(MathTools.isValidAnswer("-1", QuestionsAmount));
-        assertFalse(MathTools.isValidAnswer("0", QuestionsAmount));
+        Assertions.assertFalse(MathTools.isValidAnswer("-100", QuestionsAmount));
+        Assertions.assertFalse(MathTools.isValidAnswer("-1", QuestionsAmount));
+        Assertions.assertFalse(MathTools.isValidAnswer("0", QuestionsAmount));
     }
 
     @Test
     void isValidAnswerMoreThanQuestionsAmount() {
-        assertFalse(MathTools.isValidAnswer(String.valueOf(QuestionsAmount + 1), QuestionsAmount));
-        assertFalse(
+        Assertions.assertFalse(MathTools.isValidAnswer(String.valueOf(QuestionsAmount + 1), QuestionsAmount));
+        Assertions.assertFalse(
                 MathTools.isValidAnswer(String.valueOf(QuestionsAmount + 100), QuestionsAmount));
     }
 
     @Test
     void isValidAnswerCorrect() {
         for (var i = 1; i <= QuestionsAmount; ++i) {
-            assertTrue(MathTools.isValidAnswer(String.valueOf(i), QuestionsAmount));
+            Assertions.assertTrue(MathTools.isValidAnswer(String.valueOf(i), QuestionsAmount));
         }
     }
 
     @Test
     void isValidAnswerNotAnInt() {
-        assertFalse(MathTools.isValidAnswer(String.valueOf(0.9999f), QuestionsAmount));
+        Assertions.assertFalse(MathTools.isValidAnswer(String.valueOf(0.9999f), QuestionsAmount));
         for (var i = 1; i <= QuestionsAmount; ++i) {
-            assertFalse(MathTools.isValidAnswer(String.valueOf(i + 0.01f), QuestionsAmount));
+            Assertions.assertFalse(MathTools.isValidAnswer(String.valueOf(i + 0.01f), QuestionsAmount));
         }
     }
 
     @Test
     void isIntegerCorrect() {
-        assertTrue(MathTools.isInteger("12"));
-        assertTrue(MathTools.isInteger("-12"));
-        assertTrue(MathTools.isInteger("0"));
+        Assertions.assertTrue(MathTools.isInteger("12"));
+        Assertions.assertTrue(MathTools.isInteger("-12"));
+        Assertions.assertTrue(MathTools.isInteger("0"));
     }
 
     @Test
     void isIntegerNotANumber() {
-        assertFalse(MathTools.isInteger("ABVC"));
-        assertFalse(MathTools.isInteger("12efqef"));
-        assertFalse(MathTools.isInteger("9iq"));
-        assertFalse(MathTools.isInteger("    "));
+        Assertions.assertFalse(MathTools.isInteger("ABVC"));
+        Assertions.assertFalse(MathTools.isInteger("12efqef"));
+        Assertions.assertFalse(MathTools.isInteger("9iq"));
+        Assertions.assertFalse(MathTools.isInteger("    "));
     }
 
     @Test
     void isIntegerEmptyString() {
-        assertFalse(MathTools.isInteger(""));
+        Assertions.assertFalse(MathTools.isInteger(""));
     }
 
     @Test
     void isIntegerNull() {
-        assertFalse(MathTools.isInteger(null));
+        Assertions.assertFalse(MathTools.isInteger(null));
     }
 
     @Test
     void isIntegerNotAnInteger() {
-        assertFalse(MathTools.isInteger("0.5"));
-        assertFalse(MathTools.isInteger("-0.5"));
-        assertFalse(MathTools.isInteger("-0.0"));
+        Assertions.assertFalse(MathTools.isInteger("0.5"));
+        Assertions.assertFalse(MathTools.isInteger("-0.5"));
+        Assertions.assertFalse(MathTools.isInteger("-0.0"));
     }
 }

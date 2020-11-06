@@ -23,7 +23,7 @@ public class User {
     }
 
     public boolean isCurrentScriptExist() {
-        return CurrentScript != null;
+        return null != CurrentScript;
     }
 
     public int getCurrentNodeIndex() {
