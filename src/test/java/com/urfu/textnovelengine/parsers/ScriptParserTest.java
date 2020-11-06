@@ -1,11 +1,11 @@
 package com.urfu.textnovelengine.parsers;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import com.urfu.textnovelengine.DialogNode;
 import com.urfu.textnovelengine.Script;
 import java.io.IOException;
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 class ScriptParserTest {
 

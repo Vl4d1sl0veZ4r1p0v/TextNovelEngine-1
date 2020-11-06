@@ -1,8 +1,8 @@
 package com.urfu.textnovelengine;
 
-import org.junit.jupiter.api.Test;
-
 import static org.junit.jupiter.api.Assertions.*;
+
+import org.junit.jupiter.api.Test;
 
 class MathToolsTest {
     private final int QuestionsAmount = 3;
@@ -35,7 +35,8 @@ class MathToolsTest {
     @Test
     void isValidAnswerMoreThanQuestionsAmount() {
         assertFalse(MathTools.isValidAnswer(String.valueOf(QuestionsAmount + 1), QuestionsAmount));
-        assertFalse(MathTools.isValidAnswer(String.valueOf(QuestionsAmount + 100), QuestionsAmount));
+        assertFalse(
+                MathTools.isValidAnswer(String.valueOf(QuestionsAmount + 100), QuestionsAmount));
     }
 
     @Test

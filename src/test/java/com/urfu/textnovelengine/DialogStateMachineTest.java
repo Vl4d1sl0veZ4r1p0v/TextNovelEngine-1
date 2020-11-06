@@ -1,10 +1,10 @@
 package com.urfu.textnovelengine;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import com.urfu.textnovelengine.backendapi.User;
 import java.io.IOException;
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 class DialogStateMachineTest {
 

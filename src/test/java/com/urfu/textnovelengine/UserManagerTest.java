@@ -1,8 +1,8 @@
 package com.urfu.textnovelengine;
 
-import org.junit.jupiter.api.Test;
-
 import static org.junit.jupiter.api.Assertions.*;
+
+import org.junit.jupiter.api.Test;
 
 class UserManagerTest {
     UserManager userManager;
