@@ -7,10 +7,10 @@ import java.nio.file.Files;
 import java.util.HashMap;
 
 public class ScriptsManager {
-    private final HashMap<String, Script> Scripts;
+    private final HashMap<String, Script> scripts;
 
     public ScriptsManager() throws IOException {
-        Scripts = new HashMap<>();
+        scripts = new HashMap<>();
         parseAllScripts(getScriptsNames());
     }
 
@@ -23,12 +23,12 @@ public class ScriptsManager {
 
     private void parseAllScripts(String[] scriptsNames) throws IOException {
         for (String name : scriptsNames) {
-            Scripts.put(name, ScriptParser.parse(name));
+            scripts.put(name, ScriptParser.parse(name));
         }
     }
 
     public Script getScript(String scriptName) {
-        return Scripts.get(scriptName);
+        return scripts.get(scriptName);
     }
 
 }

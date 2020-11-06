@@ -4,52 +4,52 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 class MathToolsTest {
-    private final int QuestionsAmount = 3;
+    private final int questionsAmount = 3;
 
     @Test
     void isValidAnswerNotANumber() {
-        Assertions.assertFalse(MathTools.isValidAnswer("ABVC", QuestionsAmount));
-        Assertions.assertFalse(MathTools.isValidAnswer("12efqef", QuestionsAmount));
-        Assertions.assertFalse(MathTools.isValidAnswer("9iq", QuestionsAmount));
-        Assertions.assertFalse(MathTools.isValidAnswer("    ", QuestionsAmount));
+        Assertions.assertFalse(MathTools.isValidAnswer("ABVC", questionsAmount));
+        Assertions.assertFalse(MathTools.isValidAnswer("12efqef", questionsAmount));
+        Assertions.assertFalse(MathTools.isValidAnswer("9iq", questionsAmount));
+        Assertions.assertFalse(MathTools.isValidAnswer("    ", questionsAmount));
     }
 
     @Test
     void isValidAnswerEmptyString() {
-        Assertions.assertFalse(MathTools.isValidAnswer("", QuestionsAmount));
+        Assertions.assertFalse(MathTools.isValidAnswer("", questionsAmount));
     }
 
     @Test
     void isValidAnswerNull() {
-        Assertions.assertFalse(MathTools.isValidAnswer(null, QuestionsAmount));
+        Assertions.assertFalse(MathTools.isValidAnswer(null, questionsAmount));
     }
 
     @Test
     void isValidAnswerLessThanOne() {
-        Assertions.assertFalse(MathTools.isValidAnswer("-100", QuestionsAmount));
-        Assertions.assertFalse(MathTools.isValidAnswer("-1", QuestionsAmount));
-        Assertions.assertFalse(MathTools.isValidAnswer("0", QuestionsAmount));
+        Assertions.assertFalse(MathTools.isValidAnswer("-100", questionsAmount));
+        Assertions.assertFalse(MathTools.isValidAnswer("-1", questionsAmount));
+        Assertions.assertFalse(MathTools.isValidAnswer("0", questionsAmount));
     }
 
     @Test
     void isValidAnswerMoreThanQuestionsAmount() {
-        Assertions.assertFalse(MathTools.isValidAnswer(String.valueOf(QuestionsAmount + 1), QuestionsAmount));
+        Assertions.assertFalse(MathTools.isValidAnswer(String.valueOf(questionsAmount + 1), questionsAmount));
         Assertions.assertFalse(
-                MathTools.isValidAnswer(String.valueOf(QuestionsAmount + 100), QuestionsAmount));
+                MathTools.isValidAnswer(String.valueOf(questionsAmount + 100), questionsAmount));
     }
 
     @Test
     void isValidAnswerCorrect() {
-        for (var i = 1; i <= QuestionsAmount; ++i) {
-            Assertions.assertTrue(MathTools.isValidAnswer(String.valueOf(i), QuestionsAmount));
+        for (var i = 1; i <= questionsAmount; ++i) {
+            Assertions.assertTrue(MathTools.isValidAnswer(String.valueOf(i), questionsAmount));
         }
     }
 
     @Test
     void isValidAnswerNotAnInt() {
-        Assertions.assertFalse(MathTools.isValidAnswer(String.valueOf(0.9999f), QuestionsAmount));
-        for (var i = 1; i <= QuestionsAmount; ++i) {
-            Assertions.assertFalse(MathTools.isValidAnswer(String.valueOf(i + 0.01f), QuestionsAmount));
+        Assertions.assertFalse(MathTools.isValidAnswer(String.valueOf(0.9999f), questionsAmount));
+        for (var i = 1; i <= questionsAmount; ++i) {
+            Assertions.assertFalse(MathTools.isValidAnswer(String.valueOf(i + 0.01f), questionsAmount));
         }
     }
 

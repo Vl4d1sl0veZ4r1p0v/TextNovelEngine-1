@@ -2,35 +2,35 @@ package com.urfu.textnovelengine.backendapi;
 
 public class User {
     public final long ID;
-    private String CurrentScript;
-    private int CurrentNodeIndex;
+    private String currentScript;
+    private int currentNodeIndex;
 
     public User(long ID) {
         this.ID = ID;
     }
 
     public String getCurrentScript() {
-        return CurrentScript;
+        return currentScript;
     }
 
     public void setNewScript(String newScript) {
-        CurrentScript = newScript;
-        CurrentNodeIndex = 0;
+        currentScript = newScript;
+        currentNodeIndex = 0;
     }
 
     public void clearCurrentScript() {
-        CurrentScript = null;
+        currentScript = null;
     }
 
     public boolean isCurrentScriptExist() {
-        return null != CurrentScript;
+        return null != currentScript;
     }
 
     public int getCurrentNodeIndex() {
-        return CurrentNodeIndex;
+        return currentNodeIndex;
     }
 
     public void setCurrentNodeIndex(int currentNodeIndex) {
-        CurrentNodeIndex = currentNodeIndex;
+        this.currentNodeIndex = currentNodeIndex;
     }
 }
