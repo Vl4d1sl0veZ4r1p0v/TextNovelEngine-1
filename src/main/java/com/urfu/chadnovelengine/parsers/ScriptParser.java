@@ -4,7 +4,6 @@ import com.urfu.chadnovelengine.DialogNode;
 import com.urfu.chadnovelengine.Script;
 import com.urfu.chadnovelengine.SimpleTalker;
 import com.urfu.chadnovelengine.backendapi.Talker;
-
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;

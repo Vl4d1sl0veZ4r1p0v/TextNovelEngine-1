@@ -1,7 +1,6 @@
 package com.urfu.chadnovelengine;
 
 import com.urfu.chadnovelengine.backendapi.User;
-
 import java.util.HashMap;
 
 public class UserManager {

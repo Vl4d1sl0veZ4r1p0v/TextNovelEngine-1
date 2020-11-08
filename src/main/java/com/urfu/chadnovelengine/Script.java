@@ -1,14 +1,14 @@
 package com.urfu.chadnovelengine;
 
 public class Script {
-    private final DialogNode[] Nodes;
+    private final DialogNode[] nodes;
 
     public Script(DialogNode[] scriptNodes) {
-        Nodes = scriptNodes;
+        nodes = scriptNodes;
     }
 
     public DialogNode getNode(int index) {
-        return Nodes[index];
+        return nodes[index];
     }
 
 }

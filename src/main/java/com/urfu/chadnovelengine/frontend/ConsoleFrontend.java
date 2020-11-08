@@ -2,7 +2,6 @@ package com.urfu.chadnovelengine.frontend;
 
 import com.urfu.chadnovelengine.backendapi.IO;
 import com.urfu.chadnovelengine.MathTools;
-
 import java.io.InputStream;
 import java.util.Scanner;
 

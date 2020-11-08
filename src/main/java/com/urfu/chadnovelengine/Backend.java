@@ -1,27 +1,26 @@
 package com.urfu.chadnovelengine;
 
 import com.urfu.chadnovelengine.backendapi.IO;
-
 import java.io.IOException;
 
 public class Backend {
-    public final UserManager Users;
-    public final ScriptsManager Scripts;
-    private final DialogStateMachine DialogStateMachine;
+    public final UserManager users;
+    public final ScriptsManager scripts;
+    private final DialogStateMachine dialogStateMachine;
 
     public Backend() throws IOException {
-        Users = new UserManager();
-        Scripts = new ScriptsManager();
-        DialogStateMachine = new DialogStateMachine();
+        users = new UserManager();
+        scripts = new ScriptsManager();
+        dialogStateMachine = new DialogStateMachine();
     }
 
-    public void UpdateUser(int userID, IO io) {
-        var scriptsNames = Scripts.getAllScriptsNames();
-        var user = Users.isUserRegistered(userID) ? Users.getUser(userID) : Users.addUser(userID);
+    public void updateUser(int userID, IO io) {
+        var scriptsNames = scripts.getAllScriptsNames();
+        var user = users.isUserRegistered(userID) ? users.getUser(userID) : users.addUser(userID);
 
         if (user.hasRunningScript()) {
             checkContinuity(
-                    DialogStateMachine.Update(user, Scripts, io),
+                    dialogStateMachine.update(user, scripts, io),
                     scriptsNames,
                     io);
         } else {
@@ -29,7 +28,7 @@ public class Backend {
             if (MathTools.contains(userAnswer, scriptsNames)) {
                 user.setNewScript(userAnswer);
                 checkContinuity(
-                        DialogStateMachine.StartDialog(user, Scripts, io),
+                        dialogStateMachine.startDialog(user, scripts, io),
                         scriptsNames,
                         io);
             } else {

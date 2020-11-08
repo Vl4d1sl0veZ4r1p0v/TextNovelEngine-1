@@ -1,6 +1,5 @@
 package com.urfu.chadnovelengine;
 
-
 public class MathTools {
 
     public static boolean isValidAnswer(String answer, int answersAmount) {

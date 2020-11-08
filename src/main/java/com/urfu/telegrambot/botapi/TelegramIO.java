@@ -5,13 +5,12 @@ import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardButton;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardRow;
-
 import java.util.ArrayList;
 import java.util.List;
 
 public class TelegramIO implements IO {
     private SendMessage sendMessage;
-    private String CurrentUserAnswer;
+    private String currentUserAnswer;
     private ArrayList<String> messagesList;
 
     public TelegramIO() {
@@ -41,11 +40,11 @@ public class TelegramIO implements IO {
 
     @Override
     public String getUserAnswer() {
-        return CurrentUserAnswer;
+        return currentUserAnswer;
     }
 
     @Override
-    public static int getAnswerIndex(String answer, String[] answers) {
+    public int getAnswerIndex(String answer, String[] answers) {
         for (var i = 0; i < answers.length; ++i) {
             if (answer.equals(answers[i])) {
                 return i;
@@ -56,7 +55,7 @@ public class TelegramIO implements IO {
     }
 
     public void setUserAnswer(String answer) {
-        CurrentUserAnswer = answer;
+        currentUserAnswer = answer;
     }
 
     private void setPossibleReplies(String[] answers) {
@@ -70,11 +69,9 @@ public class TelegramIO implements IO {
             row.add(button);
             keyboard.add(row);
         }
+
         replyKeyboardMarkup.setKeyboard(keyboard);
         sendMessage.setReplyMarkup(replyKeyboardMarkup);
     }
 
-    public void ClearButtons() {
-
-    }
 }

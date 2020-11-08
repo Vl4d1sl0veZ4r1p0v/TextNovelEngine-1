@@ -1,19 +1,18 @@
 package com.urfu.chadnovelengine;
 
 import com.urfu.chadnovelengine.parsers.ScriptParser;
-
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.util.HashMap;
 
 public class ScriptsManager {
-    private final HashMap<String, Script> Scripts;
-    private final String[] ScriptsNames;
+    private final HashMap<String, Script> scripts;
+    private final String[] scriptsNames;
 
     public ScriptsManager() throws IOException {
-        ScriptsNames = getScriptsNames();
-        Scripts = ParseAllScripts(ScriptsNames);
+        scriptsNames = getScriptsNames();
+        scripts = parseAllScripts(scriptsNames);
     }
 
     private String[] getScriptsNames() throws IOException {
@@ -23,7 +22,7 @@ public class ScriptsManager {
         return text.toArray(new String[0]);
     }
 
-    private HashMap<String, Script> ParseAllScripts(String[] scriptsNames) throws IOException {
+    private HashMap<String, Script> parseAllScripts(String[] scriptsNames) throws IOException {
         var scripts = new HashMap<String, Script>();
         for (String name : scriptsNames) {
             scripts.put(name, ScriptParser.parse(name));
@@ -33,11 +32,11 @@ public class ScriptsManager {
     }
 
     public Script getScript(String scriptName) {
-        return Scripts.get(scriptName);
+        return scripts.get(scriptName);
     }
 
     public String[] getAllScriptsNames() {
-        return ScriptsNames;
+        return scriptsNames;
     }
 
 }

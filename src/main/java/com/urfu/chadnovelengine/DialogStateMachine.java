@@ -5,21 +5,21 @@ import com.urfu.chadnovelengine.backendapi.User;
 
 public class DialogStateMachine {
 
-    public boolean StartDialog(User user, ScriptsManager scripts, IO io) {
+    public boolean startDialog(User user, ScriptsManager scripts, IO io) {
         var userCurrentScript = scripts.getScript(user.getCurrentScript());
-        return PrintResponse(user, userCurrentScript, io);
+        return printResponse(user, userCurrentScript, io);
     }
 
-    public boolean Update(User user, ScriptsManager scripts, IO io) {
+    public boolean update(User user, ScriptsManager scripts, IO io) {
         var userCurrentScript = scripts.getScript(user.getCurrentScript());
-        CheckAnswer(user, userCurrentScript, io);
+        checkAnswer(user, userCurrentScript, io);
         if (!user.hasRunningScript()) {
             return false;
         }
-        return PrintResponse(user, userCurrentScript, io);
+        return printResponse(user, userCurrentScript, io);
     }
 
-    private boolean PrintResponse(User user, Script script, IO io) {
+    private boolean printResponse(User user, Script script, IO io) {
         var currentNode = script.getNode(user.getCurrentNodeIndex());
         var answers = currentNode.getAnswers();
         var talker = currentNode.getTalker();
@@ -37,7 +37,7 @@ public class DialogStateMachine {
         return true;
     }
 
-    private void CheckAnswer(User user, Script script, IO io) {
+    private void checkAnswer(User user, Script script, IO io) {
         var currentNode = script.getNode(user.getCurrentNodeIndex());
         var answer = io.getUserAnswer();
         var answers = currentNode.getAnswers();

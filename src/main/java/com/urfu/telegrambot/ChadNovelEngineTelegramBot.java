@@ -41,7 +41,7 @@ public class ChadNovelEngineTelegramBot extends TelegramWebhookBot {
         try {
             var io = new TelegramIO();
             io.setUserAnswer(messageText);
-            chadNovelEngineBackend.UpdateUser(userID, io);
+            chadNovelEngineBackend.updateUser(userID, io);
 
             var replyMessage = io.makeMessage();
             replyMessage.setChatId(chatID);
