@@ -37,7 +37,8 @@ public class ScriptParser {
 
                 var nextItem = text.get(i + 1).split(": ");
                 if (nextItem[0].equals("content")) {
-                    newNode.setContent(new Content(nextItem[2], nextItem[1]));
+                    var contentRaw = nextItem[1].split(" ");
+                    newNode.setContent(new Content(contentRaw[1], contentRaw[0]));
                     ++i;
                 }
 
