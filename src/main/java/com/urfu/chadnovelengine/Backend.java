@@ -1,6 +1,9 @@
 package com.urfu.chadnovelengine;
 
 import com.urfu.chadnovelengine.backendapi.IO;
+import com.urfu.chadnovelengine.backendapi.Message;
+import com.urfu.chadnovelengine.backendapi.MessageType;
+
 import java.io.IOException;
 
 public class Backend {
@@ -32,7 +35,7 @@ public class Backend {
                         scriptsNames,
                         io);
             } else {
-                io.printMessage("Выберите сюжет:");
+                io.sendMessage(new Message("Выберите сюжет:", MessageType.TEXT));
                 io.printExistingScriptsNames(scriptsNames);
             }
         }
@@ -40,7 +43,7 @@ public class Backend {
 
     private void checkContinuity(boolean doesContinue, String[] scriptsNames, IO io) {
         if (!doesContinue) {
-            io.printMessage("Выберите новый сюжет:");
+            io.sendMessage(new Message("Выберите новый сюжет:", MessageType.TEXT));
             io.printExistingScriptsNames(scriptsNames);
         }
     }
