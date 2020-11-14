@@ -12,7 +12,8 @@ import java.util.HashMap;
 public class ScriptParser {
     public static Script parse(String scriptName) throws IOException {
         ClassLoader classLoader = ClassLoader.getSystemClassLoader();
-        File file = new File(classLoader.getResource(scriptName + ".sc").getFile());
+        File file = new File(
+                classLoader.getResource("Scripts/" + scriptName + ".sc").getFile());
 
         var text = Files.readAllLines(file.toPath());
         var nodesAmount = Integer.parseInt(text.get(0).split(": ")[1]);
