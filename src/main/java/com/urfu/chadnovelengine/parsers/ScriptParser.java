@@ -2,13 +2,13 @@ package com.urfu.chadnovelengine.parsers;
 
 import com.urfu.chadnovelengine.DialogNode;
 import com.urfu.chadnovelengine.Script;
-import com.urfu.chadnovelengine.SimpleTalker;
-import com.urfu.chadnovelengine.backendapi.Content;
-import com.urfu.chadnovelengine.backendapi.Talker;
+import com.urfu.chadnovelengine.backendapi.Message;
+import com.urfu.chadnovelengine.backendapi.MessageType;
+
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.util.HashMap;
+import java.util.ArrayList;
 
 public class ScriptParser {
     public static Script parse(String scriptName) throws IOException {
@@ -17,51 +17,68 @@ public class ScriptParser {
                 classLoader.getResource("Scripts/" + scriptName + ".sc").getFile());
 
         var text = Files.readAllLines(file.toPath());
-        var nodesAmount = Integer.parseInt(text.get(0).split(": ")[1]);
-        var nodes = new DialogNode[nodesAmount];
-        var talkers = new HashMap<String, Talker>();
+        var nodes = new ArrayList<DialogNode>();
 
-        for (int i = 2, nodeIndex = 0; i < text.size(); i++) {
+        for (int i = 0; i < text.size(); ++i) {
             var buffer = text.get(i).split(": ");
-
-            if (buffer[0].equals("talker")) {
-                var talkerName = buffer[1];
-                var talkerWrongInputSpeech = text.get(++i).split(": ")[1];
-                talkers.put(talkerName, new SimpleTalker(talkerName, talkerWrongInputSpeech));
-            }
-
             if (buffer[0].equals("node")) {
-                var talker = talkers.get(text.get(++i).split(": ")[1]);
-                var talkerMessage = text.get(++i).split(": ")[1];
-                var newNode = new DialogNode(talker, talkerMessage);
+                var messages = new ArrayList<Message>();
+                do {
+                    var messageRaw = text.get(++i);
+                    var messageSplit = messageRaw.split("[: ]");
 
-                var nextItem = text.get(i + 1).split(": ");
-                if (nextItem[0].equals("content")) {
-                    var contentRaw = nextItem[1].split(" ");
-                    newNode.setContent(new Content(contentRaw[1], contentRaw[0]));
-                    ++i;
-                }
-
-                var answersAmount = Integer.parseInt(text.get(++i).split(": ")[1]);
-                if (answersAmount != 0) {
-                    var answers = new String[answersAmount];
-                    var responses = new int[answersAmount];
-                    for (var k = 0; k < answersAmount; k++) {
-                        var bufferLine = text.get(++i).split(": ");
-                        responses[k] = Integer.parseInt(bufferLine[0]);
-                        answers[k] = bufferLine[1];
+                    if (!messageSplit[0].equals("message")) {
+                        break;
                     }
 
-                    newNode.setAnswers(answers);
-                    newNode.setResponses(responses);
+                    var content = messageRaw.substring(messageRaw.indexOf(": ") + 2);
+                    var type = messageSplit[1];
+                    messages.add(CreateMessage(content, type));
+                } while (i < text.size() - 1);
+
+                var newNode = new DialogNode(messages);
+
+                var wrongInputReactionRaw = text.get(i);
+                if (wrongInputReactionRaw.equals("")) {
+                    nodes.add(newNode);
+                    continue;
                 }
 
-                nodes[nodeIndex++] = newNode;
-            }
+                var wrongInputReaction = wrongInputReactionRaw.split(": ")[1];
+                var answers = new ArrayList<String>();
+                var responses = new ArrayList<Integer>();
 
+                ++i;
+                while (true) {
+                    if (i == text.size() || text.get(++i).equals("")) {
+                        newNode.setWrongInputReaction(new Message(wrongInputReaction, MessageType.TEXT));
+                        newNode.setAnswers(answers.toArray(new String[0]));
+                        newNode.setResponses(responses.stream().mapToInt(k->k).toArray());
+                        nodes.add(newNode);
+                        break;
+                    }
+
+                    var answerSplit = text.get(i).split(": ");
+                    responses.add(Integer.parseInt(answerSplit[0]));
+                    answers.add(answerSplit[1]);
+                }
+            }
         }
 
-        return new Script(nodes);
+        return new Script(nodes.toArray(new DialogNode[0]));
     }
-}
 
+    private static Message CreateMessage(String message, String type) {
+        MessageType messageType;
+        switch (type) {
+            case "image" -> messageType = MessageType.IMAGE;
+            case "music" -> messageType = MessageType.MUSIC;
+            case "video" -> messageType = MessageType.VIDEO;
+            case "doc" -> messageType = MessageType.DOCUMENT;
+            default -> messageType = MessageType.TEXT;
+        }
+
+        return new Message(message, messageType);
+    }
+
+}

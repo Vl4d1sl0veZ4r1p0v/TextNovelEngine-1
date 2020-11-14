@@ -1,21 +1,18 @@
 package com.urfu.chadnovelengine.frontend;
 
-import com.urfu.chadnovelengine.backendapi.Content;
 import com.urfu.chadnovelengine.backendapi.IO;
 import com.urfu.chadnovelengine.MathTools;
+import com.urfu.chadnovelengine.backendapi.Message;
+
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.Scanner;
 
-public class ConsoleFrontend extends IO {
+public class ConsoleFrontend implements IO {
     private final Scanner console;
 
     public ConsoleFrontend(InputStream source) {
         console = new Scanner(source);
-    }
-
-    @Override
-    public void printMessage(String message) {
-        System.out.println(message);
     }
 
     @Override
@@ -39,13 +36,32 @@ public class ConsoleFrontend extends IO {
     }
 
     @Override
-    protected void trySendContent(Content content) {
-        printMessage("name: " + content.name + ", type: " + content.contentType);
+    public void sendMessage(Message message) {
+        switch (message.messageType) {
+            case TEXT -> printMessage(message.content);
+            case IMAGE, MUSIC, VIDEO, DOCUMENT -> logContent(message);
+        }
+    }
+
+    @Override
+    public void sendMessages(ArrayList<Message> messages) {
+        for (var message : messages) {
+            sendMessage(message);
+        }
+    }
+
+    private void printMessage(String message) {
+        System.out.println(message);
     }
 
     private void printArrayWithIndices(String[] array) {
         for (var i = 0; i < array.length; i++) {
-            System.out.println((i + 1) + " " + array[i]);
+            printMessage((i + 1) + " " + array[i]);
         }
     }
+
+    private void logContent(Message message) {
+        printMessage("content path: " + message.content + ", type: " + message.messageType);
+    }
+
 }

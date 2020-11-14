@@ -1,6 +1,8 @@
 package com.urfu.chadnovelengine;
 
 import com.urfu.chadnovelengine.backendapi.IO;
+import com.urfu.chadnovelengine.backendapi.Message;
+import com.urfu.chadnovelengine.backendapi.MessageType;
 import com.urfu.chadnovelengine.backendapi.User;
 
 public class DialogStateMachine {
@@ -22,17 +24,15 @@ public class DialogStateMachine {
     private boolean printResponse(User user, Script script, IO io) {
         var currentNode = script.getNode(user.getCurrentNodeIndex());
         var answers = currentNode.getAnswers();
-        var talker = currentNode.getTalker();
 
-        io.printMessage((talker.talk(currentNode.getTalkerMessage())));
+        io.sendMessages(currentNode.getMessages());
 
         if (answers == null) {
             user.clearCurrentScript();
-            io.printMessage("Сюжет окончен");
+            io.sendMessage(new Message("Сюжет окончен", MessageType.TEXT));
             return false;
         }
 
-        io.sendContent(currentNode.getContent());
         io.printPossibleAnswers(answers);
 
         return true;
@@ -42,31 +42,30 @@ public class DialogStateMachine {
         var currentNode = script.getNode(user.getCurrentNodeIndex());
         var answer = io.getUserAnswer();
         var answers = currentNode.getAnswers();
-        var talker = currentNode.getTalker();
 
         switch (answer) {
             case "/exit":
                 user.clearCurrentScript();
-                io.printMessage("Выход");
+                io.sendMessage(new Message("Выход", MessageType.TEXT));
                 return;
 
             case "/repeat":
                 return;
 
             case "/help":
-                io.printMessage(
+                io.sendMessage(new Message(
                                 """
                                 Напишите 'start', чтобы начать диалог.
                                 Чтобы ответить, наберите число перед выбранным ответом.
                                 Напишите 'repeat', чтобы повторить последнее сообщение.
                                 Напишите 'exit', чтобы прервать текущий сюжет.
-                                """);
+                                """, MessageType.TEXT));
                 return;
         }
 
         var answerIndex = io.getAnswerIndex(answer, answers);
         if (answerIndex == -1) {
-            io.printMessage(talker.wrongInputReaction());
+            io.sendMessage(currentNode.getWrongInputReaction());
             return;
         }
 

@@ -1,35 +1,31 @@
 package com.urfu.chadnovelengine;
 
-import com.urfu.chadnovelengine.backendapi.Content;
-import com.urfu.chadnovelengine.backendapi.Talker;
+import com.urfu.chadnovelengine.backendapi.Message;
+
+import java.util.ArrayList;
 
 public class DialogNode {
-    private final Talker talker;
-    private final String talkerMessage;
-
-    private Content content;
+    private final ArrayList<Message> messages;
+    private Message wrongInputReaction;
     private String[] answers;
     private int[] responses;
 
-    public DialogNode(Talker talker, String talkerMessage) {
-        this.talker = talker;
-        this.talkerMessage = talkerMessage;
+    public DialogNode(ArrayList<Message> messages) {
+        if (messages.size() == 0) throw new IllegalArgumentException(
+                "Dialog Nodes should have at least one message of any type");
+        this.messages = messages;
     }
 
-    public Talker getTalker() {
-        return talker;
+    public ArrayList<Message> getMessages() {
+        return messages;
     }
 
-    public String getTalkerMessage() {
-        return talkerMessage;
+    public Message getWrongInputReaction() {
+        return wrongInputReaction;
     }
 
-    public Content getContent() {
-        return content;
-    }
-
-    public void setContent(Content content) {
-        this.content = content;
+    public void setWrongInputReaction(Message wrongInputReaction) {
+        this.wrongInputReaction = wrongInputReaction;
     }
 
     public String[] getAnswers() {

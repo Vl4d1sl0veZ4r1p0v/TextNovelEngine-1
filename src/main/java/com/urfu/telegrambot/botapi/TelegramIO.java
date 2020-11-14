@@ -1,32 +1,28 @@
 package com.urfu.telegrambot.botapi;
 
-import com.urfu.chadnovelengine.backendapi.Content;
 import com.urfu.chadnovelengine.backendapi.IO;
-import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
+import com.urfu.chadnovelengine.backendapi.Message;
+import org.telegram.telegrambots.meta.api.methods.send.*;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardButton;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardRow;
+
 import java.util.ArrayList;
 import java.util.List;
 
-public class TelegramIO extends IO {
+public class TelegramIO implements IO {
+    private ArrayList<Message> messages;
     private SendMessage sendMessage;
     private String currentUserAnswer;
-    private ArrayList<String> messagesList;
 
     public TelegramIO() {
         this.sendMessage = new SendMessage();
-        messagesList = new ArrayList<>();
+        messages = new ArrayList<>();
     }
 
     public SendMessage makeMessage() {
         sendMessage.setText(String.join("\n", messagesList));
         return sendMessage;
-    }
-
-    @Override
-    public void printMessage(String message) {
-        messagesList.add(message);
     }
 
     @Override
@@ -56,8 +52,13 @@ public class TelegramIO extends IO {
     }
 
     @Override
-    protected void trySendContent(Content content) {
-        printMessage("name: " + content.name + ", type: " + content.contentType);
+    public void sendMessage(Message message) {
+        messages.add(message);
+    }
+
+    @Override
+    public void sendMessages(ArrayList<Message> messages) {
+        this.messages.addAll(messages);
     }
 
     public void setUserAnswer(String answer) {
@@ -80,4 +81,7 @@ public class TelegramIO extends IO {
         sendMessage.setReplyMarkup(replyKeyboardMarkup);
     }
 
+    public ArrayList<Message> getMessages() {
+        return messages;
+    }
 }

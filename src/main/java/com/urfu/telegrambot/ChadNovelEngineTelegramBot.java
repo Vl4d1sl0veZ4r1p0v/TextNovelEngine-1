@@ -4,12 +4,19 @@ import com.urfu.chadnovelengine.Backend;
 import com.urfu.telegrambot.botapi.TelegramIO;
 import lombok.Synchronized;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.util.ResourceUtils;
 import org.telegram.telegrambots.bots.DefaultBotOptions;
 import org.telegram.telegrambots.bots.TelegramWebhookBot;
 import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
+import org.telegram.telegrambots.meta.api.methods.send.SendAudio;
+import org.telegram.telegrambots.meta.api.methods.send.SendDocument;
+import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
+import org.telegram.telegrambots.meta.api.methods.send.SendVideo;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 
 @Slf4j
@@ -44,6 +51,16 @@ public class ChadNovelEngineTelegramBot extends TelegramWebhookBot {
             var io = new TelegramIO();
             io.setUserAnswer(messageText);
             chadNovelEngineBackend.updateUser(userID, io);
+            var messages = io.getMessages();
+            for (var m : messages) {
+                switch (m.messageType) {
+                    case IMAGE -> execute(sendImage(chatID, m.content));
+                    case MUSIC -> execute(sendMusic(chatID, m.content));
+                    case VIDEO -> execute(sendVideo(chatID, m.content));
+                    case DOCUMENT -> execute(sendDocument(chatID, m.content));
+                    default -> execute(sendText(chatID, m.content));
+                }
+            }
 
             var replyMessage = io.makeMessage();
             replyMessage.setChatId(chatID);
@@ -82,4 +99,41 @@ public class ChadNovelEngineTelegramBot extends TelegramWebhookBot {
     public void setBotUsername(String botUsername) {
         this.botUsername = botUsername;
     }
+
+    public SendPhoto sendImage(long chatId, String imagePath) throws FileNotFoundException {
+        File image = ResourceUtils.getFile("classpath:" + imagePath);
+        SendPhoto sendPhoto = new SendPhoto();
+        sendPhoto.setChatId(chatId);
+        sendPhoto.setPhoto(image);
+
+        return sendPhoto;
+    }
+
+    public SendAudio sendMusic(long chatId, String musicPath) throws FileNotFoundException {
+        File audio = ResourceUtils.getFile("classpath:" + musicPath);
+        SendAudio sendAudio = new SendAudio();
+        sendAudio.setChatId(chatId);
+        sendAudio.setAudio(audio);
+
+        return sendAudio;
+    }
+
+    public SendVideo sendVideo(long chatId, String videoFilePath) throws FileNotFoundException {
+        File video = ResourceUtils.getFile("classpath:" + videoFilePath);
+        SendVideo sendVideo = new SendVideo();
+        sendVideo.setChatId(chatId);
+        sendVideo.setVideo(video);
+
+        return sendVideo;
+    }
+
+    public SendDocument sendDocument(long chatId, String docFilePath) throws FileNotFoundException {
+        File file = ResourceUtils.getFile("classpath:" + docFilePath);
+        SendDocument sendDocument = new SendDocument();
+        sendDocument.setChatId(chatId);
+        sendDocument.setDocument(file);
+
+        return sendDocument;
+    }
+
 }
