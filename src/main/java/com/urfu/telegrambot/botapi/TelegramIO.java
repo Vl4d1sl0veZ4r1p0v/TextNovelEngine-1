@@ -8,7 +8,7 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.Keyboard
 import java.util.ArrayList;
 import java.util.List;
 
-public class TelegramIO implements IO {
+public class TelegramIO extends IO {
     private SendMessage sendMessage;
     private String currentUserAnswer;
     private ArrayList<String> messagesList;
@@ -52,6 +52,11 @@ public class TelegramIO implements IO {
         }
 
         return -1;
+    }
+
+    @Override
+    protected void trySendContent(String contentName) {
+        printMessage(contentName);
     }
 
     public void setUserAnswer(String answer) {

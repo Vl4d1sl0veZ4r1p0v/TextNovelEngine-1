@@ -5,7 +5,7 @@ import com.urfu.chadnovelengine.MathTools;
 import java.io.InputStream;
 import java.util.Scanner;
 
-public class ConsoleFrontend implements IO {
+public class ConsoleFrontend extends IO {
     private final Scanner console;
 
     public ConsoleFrontend(InputStream source) {
@@ -35,6 +35,11 @@ public class ConsoleFrontend implements IO {
     @Override
     public int getAnswerIndex(String answer, String[] answers) {
         return MathTools.isValidAnswer(answer, answers.length) ? Integer.parseInt(answer) - 1 : -1;
+    }
+
+    @Override
+    protected void trySendContent(String contentName) {
+        printMessage(contentName);
     }
 
     private void printArrayWithIndices(String[] array) {

@@ -5,6 +5,8 @@ import com.urfu.chadnovelengine.backendapi.Talker;
 public class DialogNode {
     private final Talker talker;
     private final String talkerMessage;
+
+    private String content;
     private String[] answers;
     private int[] responses;
 
@@ -19,6 +21,14 @@ public class DialogNode {
 
     public String getTalkerMessage() {
         return talkerMessage;
+    }
+
+    public String getContent() {
+        return content;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
     }
 
     public String[] getAnswers() {

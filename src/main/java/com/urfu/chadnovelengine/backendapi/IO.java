@@ -1,13 +1,22 @@
 package com.urfu.chadnovelengine.backendapi;
 
-public interface IO {
-    void printMessage(String message);
+public abstract class IO {
+    public abstract void printMessage(String message);
 
-    void printPossibleAnswers(String[] answers);
+    public abstract void printPossibleAnswers(String[] answers);
 
-    void printExistingScriptsNames(String[] scriptsNames);
+    public abstract void printExistingScriptsNames(String[] scriptsNames);
 
-    String getUserAnswer();
+    public abstract String getUserAnswer();
 
-    int getAnswerIndex(String answer, String[] answers);
+    public abstract int getAnswerIndex(String answer, String[] answers);
+
+    protected abstract void trySendContent(String contentName);
+
+    public void sendContent(String contentName) {
+        if (contentName != null) {
+            trySendContent(contentName);
+        }
+    }
+
 }

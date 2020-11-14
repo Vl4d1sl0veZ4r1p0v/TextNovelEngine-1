@@ -32,6 +32,7 @@ public class DialogStateMachine {
             return false;
         }
 
+        io.sendContent(currentNode.getContent());
         io.printPossibleAnswers(answers);
 
         return true;
