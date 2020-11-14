@@ -1,5 +1,6 @@
 package com.urfu.telegrambot.botapi;
 
+import com.urfu.chadnovelengine.backendapi.Content;
 import com.urfu.chadnovelengine.backendapi.IO;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMarkup;
@@ -55,8 +56,8 @@ public class TelegramIO extends IO {
     }
 
     @Override
-    protected void trySendContent(String contentName) {
-        printMessage(contentName);
+    protected void trySendContent(Content content) {
+        printMessage("name: " + content.name + ", type: " + content.contentType);
     }
 
     public void setUserAnswer(String answer) {

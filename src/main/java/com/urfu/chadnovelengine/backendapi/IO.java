@@ -11,11 +11,11 @@ public abstract class IO {
 
     public abstract int getAnswerIndex(String answer, String[] answers);
 
-    protected abstract void trySendContent(String contentName);
+    protected abstract void trySendContent(Content content);
 
-    public void sendContent(String contentName) {
-        if (contentName != null) {
-            trySendContent(contentName);
+    public void sendContent(Content content) {
+        if (content != null) {
+            trySendContent(content);
         }
     }
 

@@ -3,6 +3,7 @@ package com.urfu.chadnovelengine.parsers;
 import com.urfu.chadnovelengine.DialogNode;
 import com.urfu.chadnovelengine.Script;
 import com.urfu.chadnovelengine.SimpleTalker;
+import com.urfu.chadnovelengine.backendapi.Content;
 import com.urfu.chadnovelengine.backendapi.Talker;
 import java.io.File;
 import java.io.IOException;
@@ -36,7 +37,7 @@ public class ScriptParser {
 
                 var nextItem = text.get(i + 1).split(": ");
                 if (nextItem[0].equals("content")) {
-                    newNode.setContent(nextItem[1]);
+                    newNode.setContent(new Content(nextItem[2], nextItem[1]));
                     ++i;
                 }
 

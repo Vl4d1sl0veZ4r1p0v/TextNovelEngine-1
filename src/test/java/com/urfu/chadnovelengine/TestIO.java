@@ -1,5 +1,6 @@
 package com.urfu.chadnovelengine;
 
+import com.urfu.chadnovelengine.backendapi.Content;
 import com.urfu.chadnovelengine.backendapi.IO;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -28,7 +29,6 @@ public class TestIO extends IO {
 
     @Override
     public void printExistingScriptsNames(String[] scriptsNames) {
-
     }
 
     public List<String> getTalkerMessages() {
@@ -46,6 +46,6 @@ public class TestIO extends IO {
     }
 
     @Override
-    protected void trySendContent(String contentName) {
+    protected void trySendContent(Content content) {
     }
 }

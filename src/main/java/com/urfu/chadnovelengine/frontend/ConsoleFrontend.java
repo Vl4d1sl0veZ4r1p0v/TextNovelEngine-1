@@ -1,5 +1,6 @@
 package com.urfu.chadnovelengine.frontend;
 
+import com.urfu.chadnovelengine.backendapi.Content;
 import com.urfu.chadnovelengine.backendapi.IO;
 import com.urfu.chadnovelengine.MathTools;
 import java.io.InputStream;
@@ -38,8 +39,8 @@ public class ConsoleFrontend extends IO {
     }
 
     @Override
-    protected void trySendContent(String contentName) {
-        printMessage(contentName);
+    protected void trySendContent(Content content) {
+        printMessage("name: " + content.name + ", type: " + content.contentType);
     }
 
     private void printArrayWithIndices(String[] array) {

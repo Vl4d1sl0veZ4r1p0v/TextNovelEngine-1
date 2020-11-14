@@ -1,12 +1,13 @@
 package com.urfu.chadnovelengine;
 
+import com.urfu.chadnovelengine.backendapi.Content;
 import com.urfu.chadnovelengine.backendapi.Talker;
 
 public class DialogNode {
     private final Talker talker;
     private final String talkerMessage;
 
-    private String content;
+    private Content content;
     private String[] answers;
     private int[] responses;
 
@@ -23,11 +24,11 @@ public class DialogNode {
         return talkerMessage;
     }
 
-    public String getContent() {
+    public Content getContent() {
         return content;
     }
 
-    public void setContent(String content) {
+    public void setContent(Content content) {
         this.content = content;
     }
 
