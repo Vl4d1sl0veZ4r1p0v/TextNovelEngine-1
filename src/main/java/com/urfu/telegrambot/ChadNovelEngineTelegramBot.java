@@ -97,7 +97,7 @@ public class ChadNovelEngineTelegramBot extends TelegramWebhookBot {
         }
     }
 
-    @Scheduled(cron = "0 24 13 * * *", zone = "Asia/Yekaterinburg")
+    @Scheduled(fixedDelay = 1000 * 60 * 20)
     public void notification() throws TelegramApiException {
         var currentTime = System.currentTimeMillis();
         for (var userID : lastMessageTimeUNIX.keySet()) {
