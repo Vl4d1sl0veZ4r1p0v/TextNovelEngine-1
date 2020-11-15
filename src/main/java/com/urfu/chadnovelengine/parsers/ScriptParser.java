@@ -9,7 +9,6 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.util.ArrayList;
-import java.util.StringJoiner;
 
 public class ScriptParser {
     public static Script parse(String scriptName) throws IOException {
@@ -39,13 +38,13 @@ public class ScriptParser {
 
                 var newNode = new DialogNode(messages);
 
-                var wrongInputReactionRaw = text.get(i);
-                if (wrongInputReactionRaw.equals("")) {
+                var wrongInputReactionSplit = text.get(i).split(": ");
+                if (!wrongInputReactionSplit[0].equals("wrong_input_message")) {
                     nodes.add(newNode);
                     continue;
                 }
 
-                var wrongInputReaction = wrongInputReactionRaw.split(": ")[1];
+                var wrongInputReaction = wrongInputReactionSplit[1];
                 var answers = new ArrayList<String>();
                 var responses = new ArrayList<Integer>();
 
