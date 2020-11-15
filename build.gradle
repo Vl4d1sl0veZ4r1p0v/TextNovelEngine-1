@@ -1,0 +1,49 @@
+plugins {
+    id 'org.springframework.boot' version '2.2.6.RELEASE'
+    id 'io.spring.dependency-management' version '1.0.9.RELEASE'
+    id 'java'
+}
+
+group = 'ru.home'
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = '15'
+
+configurations {
+    developmentOnly
+    runtimeClasspath {
+        extendsFrom developmentOnly
+    }
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    //region Spring
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+    developmentOnly 'org.springframework.boot:spring-boot-devtools'
+    compile('org.springframework.boot:spring-boot-configuration-processor:2.2.1.RELEASE')
+    compile group: 'org.springframework.boot', name: 'spring-boot-starter-web', version: '2.2.1.RELEASE'
+    //endregion
+
+    //region Lombok
+    compileOnly 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
+    //endregion
+
+    testCompile group: 'ch.qos.logback', name: 'logback-classic', version: '1.2.3'
+
+    compile group: 'org.telegram', name: 'telegrambots-spring-boot-starter', version: '4.4.0.2'
+    compile group: 'com.vdurmont', name: 'emoji-java', version: '5.1.1'
+}
+
+task stage(dependsOn: ['build', 'clean'])
+build.mustRunAfter clean
+
+test {
+    useJUnitPlatform()
+}
