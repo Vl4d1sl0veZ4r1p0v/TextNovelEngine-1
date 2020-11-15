@@ -20,11 +20,6 @@ public class TelegramIO implements IO {
         messages = new ArrayList<>();
     }
 
-    public SendMessage makeMessage() {
-        sendMessage.setText(String.join("\n", messagesList));
-        return sendMessage;
-    }
-
     @Override
     public void printPossibleAnswers(String[] answers) {
         setPossibleReplies(answers);
@@ -83,5 +78,9 @@ public class TelegramIO implements IO {
 
     public ArrayList<Message> getMessages() {
         return messages;
+    }
+
+    public SendMessage getSendMessage() {
+        return sendMessage;
     }
 }

@@ -8,10 +8,7 @@ import org.springframework.util.ResourceUtils;
 import org.telegram.telegrambots.bots.DefaultBotOptions;
 import org.telegram.telegrambots.bots.TelegramWebhookBot;
 import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
-import org.telegram.telegrambots.meta.api.methods.send.SendAudio;
-import org.telegram.telegrambots.meta.api.methods.send.SendDocument;
-import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
-import org.telegram.telegrambots.meta.api.methods.send.SendVideo;
+import org.telegram.telegrambots.meta.api.methods.send.*;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
@@ -62,7 +59,7 @@ public class ChadNovelEngineTelegramBot extends TelegramWebhookBot {
                 }
             }
 
-            var replyMessage = io.makeMessage();
+            var replyMessage = io.getSendMessage();
             replyMessage.setChatId(chatID);
 
             return replyMessage;
@@ -98,6 +95,14 @@ public class ChadNovelEngineTelegramBot extends TelegramWebhookBot {
 
     public void setBotUsername(String botUsername) {
         this.botUsername = botUsername;
+    }
+
+    public SendMessage sendText(long chatId, String text) {
+        SendMessage sendMessage = new SendMessage();
+        sendMessage.setText(text);
+        sendMessage.setChatId(chatId);
+
+        return sendMessage;
     }
 
     public SendPhoto sendImage(long chatId, String imagePath) throws FileNotFoundException {
