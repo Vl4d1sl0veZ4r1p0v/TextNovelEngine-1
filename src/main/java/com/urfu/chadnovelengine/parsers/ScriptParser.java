@@ -9,6 +9,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.util.ArrayList;
+import java.util.StringJoiner;
 
 public class ScriptParser {
     public static Script parse(String scriptName) throws IOException {
@@ -33,7 +34,7 @@ public class ScriptParser {
 
                     var content = messageRaw.substring(messageRaw.indexOf(": ") + 2);
                     var type = messageSplit[1];
-                    messages.add(CreateMessage(content, type));
+                    messages.add(CreateMessage(content, type, scriptName, "Content"));
                 } while (i < text.size() - 1);
 
                 var newNode = new DialogNode(messages);
@@ -68,7 +69,8 @@ public class ScriptParser {
         return new Script(nodes.toArray(new DialogNode[0]));
     }
 
-    private static Message CreateMessage(String message, String type) {
+    private static Message CreateMessage(
+            String message, String type, String scriptName, String contentDirectory) {
         MessageType messageType;
         switch (type) {
             case "image" -> messageType = MessageType.IMAGE;
@@ -76,6 +78,10 @@ public class ScriptParser {
             case "video" -> messageType = MessageType.VIDEO;
             case "doc" -> messageType = MessageType.DOCUMENT;
             default -> messageType = MessageType.TEXT;
+        }
+
+        if (messageType != MessageType.TEXT) {
+            message = contentDirectory + "/" + scriptName + "/" + message;
         }
 
         return new Message(message, messageType);
