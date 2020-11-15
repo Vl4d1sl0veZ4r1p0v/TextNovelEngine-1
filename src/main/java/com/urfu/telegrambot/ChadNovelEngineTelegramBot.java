@@ -118,7 +118,7 @@ public class ChadNovelEngineTelegramBot extends TelegramWebhookBot {
         sendMessage.setChatId(chatId);
 
         sendChatAction(chatId, ActionType.TYPING);
-        Thread.sleep(text.length() * 170);
+        Thread.sleep(text.length() * 80);
         return sendMessage;
     }
 
