@@ -7,6 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.ResourceUtils;
 import org.telegram.telegrambots.bots.DefaultBotOptions;
 import org.telegram.telegrambots.bots.TelegramWebhookBot;
+import org.telegram.telegrambots.meta.api.methods.ActionType;
 import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
 import org.telegram.telegrambots.meta.api.methods.send.*;
 import org.telegram.telegrambots.meta.api.objects.Message;
@@ -110,48 +111,64 @@ public class ChadNovelEngineTelegramBot extends TelegramWebhookBot {
         this.botUsername = botUsername;
     }
 
-    public SendMessage sendText(long chatId, String text) {
+    public SendMessage sendText(long chatId, String text) throws TelegramApiException {
         SendMessage sendMessage = new SendMessage();
         sendMessage.setText(text);
         sendMessage.setChatId(chatId);
 
+        sendChatAction(chatId, ActionType.TYPING);
         return sendMessage;
     }
 
-    public SendPhoto sendImage(long chatId, String imagePath) throws FileNotFoundException {
+    public SendPhoto sendImage(long chatId, String imagePath)
+            throws FileNotFoundException, TelegramApiException {
         File image = ResourceUtils.getFile("classpath:" + imagePath);
         SendPhoto sendPhoto = new SendPhoto();
         sendPhoto.setChatId(chatId);
         sendPhoto.setPhoto(image);
 
+        sendChatAction(chatId, ActionType.UPLOADPHOTO);
         return sendPhoto;
     }
 
-    public SendAudio sendMusic(long chatId, String musicPath) throws FileNotFoundException {
+    public SendAudio sendMusic(long chatId, String musicPath)
+            throws FileNotFoundException, TelegramApiException {
         File audio = ResourceUtils.getFile("classpath:" + musicPath);
         SendAudio sendAudio = new SendAudio();
         sendAudio.setChatId(chatId);
         sendAudio.setAudio(audio);
 
+        sendChatAction(chatId, ActionType.UPLOADAUDIO);
         return sendAudio;
     }
 
-    public SendVideo sendVideo(long chatId, String videoFilePath) throws FileNotFoundException {
+    public SendVideo sendVideo(long chatId, String videoFilePath)
+            throws FileNotFoundException, TelegramApiException {
         File video = ResourceUtils.getFile("classpath:" + videoFilePath);
         SendVideo sendVideo = new SendVideo();
         sendVideo.setChatId(chatId);
         sendVideo.setVideo(video);
 
+        sendChatAction(chatId, ActionType.RECORDVIDEO);
         return sendVideo;
     }
 
-    public SendDocument sendDocument(long chatId, String docFilePath) throws FileNotFoundException {
+    public SendDocument sendDocument(long chatId, String docFilePath)
+            throws FileNotFoundException, TelegramApiException {
         File file = ResourceUtils.getFile("classpath:" + docFilePath);
         SendDocument sendDocument = new SendDocument();
         sendDocument.setChatId(chatId);
         sendDocument.setDocument(file);
 
+        sendChatAction(chatId, ActionType.UPLOADDOCUMENT);
         return sendDocument;
+    }
+
+    public void sendChatAction(long chatId, ActionType type) throws TelegramApiException {
+        SendChatAction sendChatAction = new SendChatAction();
+        sendChatAction.setChatId(chatId);
+        sendChatAction.setAction(type);
+        execute(sendChatAction);
     }
 
 }
