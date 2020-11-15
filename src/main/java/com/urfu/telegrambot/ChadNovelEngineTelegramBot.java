@@ -4,6 +4,7 @@ import com.urfu.chadnovelengine.Backend;
 import com.urfu.telegrambot.botapi.TelegramIO;
 import lombok.Synchronized;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.util.ResourceUtils;
 import org.telegram.telegrambots.bots.DefaultBotOptions;
 import org.telegram.telegrambots.bots.TelegramWebhookBot;
@@ -17,17 +18,27 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.HashMap;
 
 @Slf4j
 public class ChadNovelEngineTelegramBot extends TelegramWebhookBot {
     private String webHookPath;
     private String botToken;
     private String botUsername;
+
     private final Backend chadNovelEngineBackend;
+    private final HashMap<Integer, Long> chatIDs;
+    private final HashMap<Integer, Long> lastMessageTimeUNIX;
+    private final long timeThreshold;
+    private final String notificationMessage;
 
     public ChadNovelEngineTelegramBot(DefaultBotOptions botOptions) throws IOException {
         super(botOptions);
         chadNovelEngineBackend = new Backend();
+        chatIDs = new HashMap<>();
+        lastMessageTimeUNIX = new HashMap<>();
+        timeThreshold = 1000 * 60 * 20;
+        notificationMessage = "Вернитесь! У вас есть незаконченный диалог";
     }
 
     @Synchronized
@@ -50,8 +61,10 @@ public class ChadNovelEngineTelegramBot extends TelegramWebhookBot {
             var io = new TelegramIO();
             io.setUserAnswer(messageText);
             chadNovelEngineBackend.updateUser(userID, io);
-            var messages = io.getMessages();
+            chatIDs.put(userID, chatID);
+            lastMessageTimeUNIX.put(userID, System.currentTimeMillis());
 
+            var messages = io.getMessages();
             for (var i = 0; i < messages.size() - 1; ++i) {
                 executeMessage(messages.get(i), chatID);
             }
@@ -81,6 +94,21 @@ public class ChadNovelEngineTelegramBot extends TelegramWebhookBot {
             case VIDEO -> execute(sendVideo(chatID, m.content));
             case DOCUMENT -> execute(sendDocument(chatID, m.content));
             default -> execute(sendText(chatID, m.content));
+        }
+    }
+
+    @Scheduled(cron = "0 24 13 * * *", zone = "Asia/Yekaterinburg")
+    public void notification() throws TelegramApiException {
+        var currentTime = System.currentTimeMillis();
+        for (var userID : lastMessageTimeUNIX.keySet()) {
+            var elapsedTime = currentTime - lastMessageTimeUNIX.get(userID);
+            if (elapsedTime > timeThreshold) {
+                lastMessageTimeUNIX.put(userID, timeThreshold + 1);  // So we won't run out of long
+                var chatID = chatIDs.get(userID);
+                execute(new SendMessage()
+                        .setChatId(chatID)
+                        .setText(notificationMessage));
+            }
         }
     }
 
