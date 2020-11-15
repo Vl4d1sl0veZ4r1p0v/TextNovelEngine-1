@@ -1,1 +1,1 @@
-web: java -Dserver.port=$PORT $JAVA_OPTS -jar ./build/libs/textnovelengine-0.0.1-SNAPSHOT.jar
+web: java -Dserver.port=$PORT $JAVA_OPTS -jar ./build/libs/chadnovelengine-0.0.1-SNAPSHOT.jar
