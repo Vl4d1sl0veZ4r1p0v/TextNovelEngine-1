@@ -111,12 +111,14 @@ public class ChadNovelEngineTelegramBot extends TelegramWebhookBot {
         this.botUsername = botUsername;
     }
 
-    public SendMessage sendText(long chatId, String text) throws TelegramApiException {
+    public SendMessage sendText(long chatId, String text)
+            throws TelegramApiException, InterruptedException {
         SendMessage sendMessage = new SendMessage();
         sendMessage.setText(text);
         sendMessage.setChatId(chatId);
 
         sendChatAction(chatId, ActionType.TYPING);
+        Thread.sleep(text.length() * 170);
         return sendMessage;
     }
 
