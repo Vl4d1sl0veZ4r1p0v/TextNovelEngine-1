@@ -11,6 +11,7 @@ import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
 import org.telegram.telegrambots.meta.api.methods.send.*;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
+import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -49,25 +50,37 @@ public class ChadNovelEngineTelegramBot extends TelegramWebhookBot {
             io.setUserAnswer(messageText);
             chadNovelEngineBackend.updateUser(userID, io);
             var messages = io.getMessages();
-            for (var m : messages) {
-                switch (m.messageType) {
-                    case IMAGE -> execute(sendImage(chatID, m.content));
-                    case MUSIC -> execute(sendMusic(chatID, m.content));
-                    case VIDEO -> execute(sendVideo(chatID, m.content));
-                    case DOCUMENT -> execute(sendDocument(chatID, m.content));
-                    default -> execute(sendText(chatID, m.content));
-                }
+
+            for (var i = 0; i < messages.size() - 1; ++i) {
+                executeMessage(messages.get(i), chatID);
             }
 
-            var replyMessage = io.getSendMessage();
-            replyMessage.setChatId(chatID);
+            var buttons = io.getButtons();
+            var m = messages.get(messages.size() - 1);
+            switch (m.messageType) {
+                case IMAGE -> execute(sendImage(chatID, m.content).setReplyMarkup(buttons));
+                case MUSIC -> execute(sendMusic(chatID, m.content).setReplyMarkup(buttons));
+                case VIDEO -> execute(sendVideo(chatID, m.content).setReplyMarkup(buttons));
+                case DOCUMENT -> execute(sendDocument(chatID, m.content).setReplyMarkup(buttons));
+                default -> execute(sendText(chatID, m.content).setReplyMarkup(buttons));
+            }  // It's a copy-paste, but it's the best you can do
 
-            return replyMessage;
         } catch (Exception ex) {
             log.error(ex.toString());
         }
 
         return null;
+    }
+
+    private void executeMessage(com.urfu.chadnovelengine.backendapi.Message m, long chatID)
+            throws FileNotFoundException, TelegramApiException {
+        switch (m.messageType) {
+            case IMAGE -> execute(sendImage(chatID, m.content));
+            case MUSIC -> execute(sendMusic(chatID, m.content));
+            case VIDEO -> execute(sendVideo(chatID, m.content));
+            case DOCUMENT -> execute(sendDocument(chatID, m.content));
+            default -> execute(sendText(chatID, m.content));
+        }
     }
 
     @Override

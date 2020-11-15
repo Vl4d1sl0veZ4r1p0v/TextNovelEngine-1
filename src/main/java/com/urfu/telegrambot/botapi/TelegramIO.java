@@ -2,7 +2,6 @@ package com.urfu.telegrambot.botapi;
 
 import com.urfu.chadnovelengine.backendapi.IO;
 import com.urfu.chadnovelengine.backendapi.Message;
-import org.telegram.telegrambots.meta.api.methods.send.*;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardButton;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardRow;
@@ -11,12 +10,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class TelegramIO implements IO {
+    private ReplyKeyboardMarkup buttons;
     private ArrayList<Message> messages;
-    private SendMessage sendMessage;
     private String currentUserAnswer;
 
     public TelegramIO() {
-        this.sendMessage = new SendMessage();
         messages = new ArrayList<>();
     }
 
@@ -61,7 +59,7 @@ public class TelegramIO implements IO {
     }
 
     private void setPossibleReplies(String[] answers) {
-        final ReplyKeyboardMarkup replyKeyboardMarkup = new ReplyKeyboardMarkup();
+        buttons = new ReplyKeyboardMarkup();
         List<KeyboardRow> keyboard = new ArrayList<>();
 
         for (String answer : answers) {
@@ -72,15 +70,14 @@ public class TelegramIO implements IO {
             keyboard.add(row);
         }
 
-        replyKeyboardMarkup.setKeyboard(keyboard);
-        sendMessage.setReplyMarkup(replyKeyboardMarkup);
+        buttons.setKeyboard(keyboard);
     }
 
     public ArrayList<Message> getMessages() {
         return messages;
     }
 
-    public SendMessage getSendMessage() {
-        return sendMessage;
+    public ReplyKeyboardMarkup getButtons() {
+        return buttons;
     }
 }
