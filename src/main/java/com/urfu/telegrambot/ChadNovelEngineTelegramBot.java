@@ -74,7 +74,7 @@ public class ChadNovelEngineTelegramBot extends TelegramWebhookBot {
     }
 
     private void executeMessage(com.urfu.chadnovelengine.backendapi.Message m, long chatID)
-            throws FileNotFoundException, TelegramApiException {
+            throws FileNotFoundException, TelegramApiException, InterruptedException {
         switch (m.messageType) {
             case IMAGE -> execute(sendImage(chatID, m.content));
             case MUSIC -> execute(sendMusic(chatID, m.content));
