@@ -42,6 +42,7 @@ dependencies {
 
     compile group: 'org.telegram', name: 'telegrambots-spring-boot-starter', version: '4.4.0.2'
     compile group: 'com.vdurmont', name: 'emoji-java', version: '5.1.1'
+    compile 'com.vk.api:sdk:1.0.6'
 }
 
 task stage(dependsOn: ['build', 'clean'])

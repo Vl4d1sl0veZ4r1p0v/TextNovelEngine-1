@@ -1,6 +1,7 @@
 package com.urfu.telegrambot;
 
 import com.urfu.chadnovelengine.Backend;
+import com.urfu.chadnovelengine.BanManager;
 import com.urfu.telegrambot.botapi.TelegramIO;
 import lombok.Synchronized;
 import lombok.extern.slf4j.Slf4j;
@@ -28,9 +29,17 @@ public class ChadNovelEngineTelegramBot extends TelegramWebhookBot {
 
     private final Backend chadNovelEngineBackend;
     private final HashMap<Integer, Long> chatIDs;
-    private final HashMap<Integer, Long> lastMessageTimeUNIX;
+    private final HashMap<Long, Long> lastMessageTimeUNIX;
     private final long timeThreshold;
     private final String notificationMessage;
+    private final String bannedMessage;
+    private BanManager banManager;
+
+    private HashMap<Long, Long> test(){
+        var tmp = new HashMap<Long, Long>();
+        tmp.put(442323085L, 1000 * 5 * 60L);
+        return tmp;
+    }
 
     public ChadNovelEngineTelegramBot(DefaultBotOptions botOptions) throws IOException {
         super(botOptions);
@@ -39,6 +48,8 @@ public class ChadNovelEngineTelegramBot extends TelegramWebhookBot {
         lastMessageTimeUNIX = new HashMap<>();
         timeThreshold = 1000 * 60 * 20;
         notificationMessage = "Вернитесь! У вас есть незаконченный диалог";
+        bannedMessage = "You're banned!";
+        banManager = new BanManager(test());
     }
 
     @Synchronized
@@ -57,12 +68,21 @@ public class ChadNovelEngineTelegramBot extends TelegramWebhookBot {
         log.info("New message from User: {}, userId: {}, chatId: {}, with text: {}",
                 userName, userID, chatID, messageText);
 
+        if (lastMessageTimeUNIX.containsKey(chatID) && banManager.filtered(chatID,
+            lastMessageTimeUNIX.get(chatID)))
+            return new SendMessage(chatID, bannedMessage);
+
         try {
+            lastMessageTimeUNIX.put(chatID, System.currentTimeMillis());
+
+            // ban place
+            banManager.put(chatID, lastMessageTimeUNIX.get(chatID));
+            //
+
             var io = new TelegramIO();
             io.setUserAnswer(messageText);
             chadNovelEngineBackend.updateUser(userID, io);
             chatIDs.put(userID, chatID);
-            lastMessageTimeUNIX.put(userID, System.currentTimeMillis());
 
             var messages = io.getMessages();
             for (var i = 0; i < messages.size() - 1; ++i) {
