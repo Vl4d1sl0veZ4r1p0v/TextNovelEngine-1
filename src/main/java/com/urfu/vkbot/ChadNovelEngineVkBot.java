@@ -1,6 +1,7 @@
 package com.urfu.vkbot;
 
 import com.urfu.chadnovelengine.Backend;
+import com.urfu.chadnovelengine.BanManager;
 import com.urfu.telegrambot.botapi.VkIO;
 import com.vk.api.sdk.client.TransportClient;
 import com.vk.api.sdk.client.VkApiClient;
@@ -12,6 +13,7 @@ import com.vk.api.sdk.objects.messages.Message;
 import com.vk.api.sdk.queries.messages.MessagesGetLongPollHistoryQuery;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
 import lombok.extern.slf4j.Slf4j;
@@ -20,6 +22,14 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 @Slf4j
 public class ChadNovelEngineVkBot {
   private Backend backend;
+
+  private static HashMap<Integer, Long> test(){
+    var tmp = new HashMap<Integer, Long>();
+    tmp.put(207887738, 1000 * 5 * 60L);
+    return tmp;
+  }
+
+
 
   public static void main(String[] args)
       throws ClientException, ApiException, InterruptedException, IOException {
@@ -32,6 +42,12 @@ public class ChadNovelEngineVkBot {
     );
     Integer ts = vk.messages().getLongPollServer(actor).execute().getTs();
     Backend chadNovelEngineBackend = new Backend();
+    var ownerId = 0;
+    var Id = 0;
+
+    String bannedMessage = "You're banned!";
+    HashMap<Integer, Long> lastMessageTimeUNIX = new HashMap<>();
+    BanManager banManager = new BanManager(test());
 
     while (true) {
       MessagesGetLongPollHistoryQuery historyQuery = vk.messages().getLongPollHistory(actor).ts(ts);
@@ -42,88 +58,157 @@ public class ChadNovelEngineVkBot {
 
           var messageText = message.getText();
           var userId = message.getFromId();
-          log.info("Vk message from User: {}, data {}", userId, message.getText());
+          System.out.println("Vk message from User: " + userId + ", data: " + message.getText());
 
-          var io = new VkIO();
-          io.setUserAnswer(messageText);
-          chadNovelEngineBackend.updateUser(userId, io);
 
-          var messages = io.getMessages();
-
-          for (var i = 0; i < messages.size() - 1; ++i) {
+          if (lastMessageTimeUNIX.containsKey(userId) && banManager.filtered(userId,
+              lastMessageTimeUNIX.get(userId))) {
             try {
-              executeMessage(vk,
-                  actor,
-                  userId,
-                  random,
-                  messages.get(i));
-            } catch (FileNotFoundException e) {
-              e.printStackTrace();
-            } catch (TelegramApiException e) {
-              e.printStackTrace();
-            } catch (InterruptedException e) {
+
+              vk.messages().send(actor).message(bannedMessage).userId(userId).randomId(random.nextInt(10000)).execute();
+
+            } catch (ApiException e) {
               e.printStackTrace();
             } catch (ClientException e) {
               e.printStackTrace();
-            } catch (ApiException e) {
-              e.printStackTrace();
             }
+
+          }
+          else {
+            var io = new VkIO();
+            io.setUserAnswer(messageText);
+            chadNovelEngineBackend.updateUser(userId, io);
+
+            var messages = io.getMessages();
+
+            for (var i = 0; i < messages.size() - 1; ++i) {
+              try {
+                executeMessage(vk,
+                    actor,
+                    userId,
+                    random,
+                    messages.get(i),
+                    ownerId,
+                    Id);
+              } catch (FileNotFoundException e) {
+                e.printStackTrace();
+              } catch (TelegramApiException e) {
+                e.printStackTrace();
+              } catch (InterruptedException e) {
+                e.printStackTrace();
+              } catch (ClientException e) {
+                e.printStackTrace();
+              } catch (ApiException e) {
+                e.printStackTrace();
+              }
+            }
+
+            var buttons = io.getButtons();
+            var m = messages.get(messages.size() - 1);
+            switch (m.messageType) {
+              case IMAGE -> {
+                try {
+                  vk.messages().send(actor).attachment(String.format("photo-%d_%d", ownerId, Id))
+                      .userId(userId)
+                      .randomId(random.nextInt(10000)).keyboard(buttons).execute();
+                } catch (ApiException e) {
+                  e.printStackTrace();
+                } catch (ClientException e) {
+                  e.printStackTrace();
+                }
+              }
+              case MUSIC -> {
+                try {
+                  vk.messages().send(actor).attachment(String.format("audio-%d_%d", ownerId, Id)).userId(userId)
+                      .randomId(random.nextInt(10000)).keyboard(buttons).execute();
+                } catch (ApiException e) {
+                  e.printStackTrace();
+                } catch (ClientException e) {
+                  e.printStackTrace();
+                }
+              }
+              case VIDEO -> {
+                try {
+                  vk.messages().send(actor).attachment(String.format("video-%d_%d", ownerId, Id)).userId(userId)
+                      .randomId(random.nextInt(10000)).keyboard(buttons).execute();
+                } catch (ApiException e) {
+                  e.printStackTrace();
+                } catch (ClientException e) {
+                  e.printStackTrace();
+                }
+              }
+              case DOCUMENT -> {
+                try {
+                  vk.messages().send(actor).attachment(String.format("doc-%d_%d", ownerId, Id)).userId(userId)
+                      .randomId(random.nextInt(10000)).keyboard(buttons).execute();
+                } catch (ApiException e) {
+                  e.printStackTrace();
+                } catch (ClientException e) {
+                  e.printStackTrace();
+                }
+              }
+              default -> {
+                try {
+                  vk.messages().send(actor).message(m.content).userId(userId)
+                      .randomId(random.nextInt(10000)).keyboard(buttons).execute();
+                } catch (ApiException e) {
+                  e.printStackTrace();
+                } catch (ClientException e) {
+                  e.printStackTrace();
+                }
+              }
+            }  // It's a copy-paste, but it's the best you can do
           }
 
-          var buttons = io.getButtons();
-          var m = messages.get(messages.size() - 1);
-          switch (m.messageType) {
-            case IMAGE -> {
-              try {
-                vk.messages().send(actor).attachment("photo-200523079_457239018").userId(userId).randomId(random.nextInt(10000)).keyboard(buttons).execute();
-              } catch (ApiException e) {
-                e.printStackTrace();
-              } catch (ClientException e) {
-                e.printStackTrace();
-              }
-              try {
-                vk.messages().send(actor).attachment("photo-200523079_457239018").userId(userId).randomId(random.nextInt(10000)).keyboard(buttons).execute();
-              } catch (ApiException e) {
-                e.printStackTrace();
-              } catch (ClientException e) {
-                e.printStackTrace();
-              }
-            }
-            case MUSIC, VIDEO, DOCUMENT -> {
-              vk.photos();
-              try {
-                vk.messages().send(actor).attachment("photo-200523079_457239018").userId(userId).randomId(random.nextInt(10000)).keyboard(buttons).execute();
-              } catch (ApiException e) {
-                e.printStackTrace();
-              } catch (ClientException e) {
-                e.printStackTrace();
-              }
-            }
-            default -> {
-              try {
-                vk.messages().send(actor).message(m.content).userId(userId).randomId(random.nextInt(10000)).keyboard(buttons).execute();
-              } catch (ApiException e) {
-                e.printStackTrace();
-              } catch (ClientException e) {
-                e.printStackTrace();
-              }
-            }
-          }  // It's a copy-paste, but it's the best you can do
-
-
         });
-      }
+        }
       ts = vk.messages().getLongPollServer(actor).execute().getTs();
       Thread.sleep(500);
     }
+
   }
 
-  private static void executeMessage(VkApiClient vk, GroupActor actor, int userId, Random random, com.urfu.chadnovelengine.backendapi.Message m)
-      throws FileNotFoundException, TelegramApiException, InterruptedException, ClientException, ApiException {
+  private static void executeMessage(VkApiClient vk, GroupActor actor, int userId,
+      Random random, com.urfu.chadnovelengine.backendapi.Message m,
+      int ownerId, int Id)
+      throws FileNotFoundException, TelegramApiException,
+      InterruptedException, ClientException, ApiException {
     switch (m.messageType) {
-      case IMAGE,MUSIC, VIDEO, DOCUMENT -> {
+      case IMAGE -> {
         try {
-          vk.messages().send(actor).attachment("photo-200523079_457239018").userId(userId).randomId(random.nextInt(10000)).execute();
+          vk.messages().send(actor).attachment(String.format("photo-%d_%d", ownerId, Id))
+              .userId(userId)
+              .randomId(random.nextInt(10000)).execute();
+        } catch (ApiException e) {
+          e.printStackTrace();
+        } catch (ClientException e) {
+          e.printStackTrace();
+        }
+      }
+      case MUSIC -> {
+        try {
+          vk.messages().send(actor).attachment(String.format("audio-%d_%d", ownerId, Id)).userId(userId)
+              .randomId(random.nextInt(10000)).execute();
+        } catch (ApiException e) {
+          e.printStackTrace();
+        } catch (ClientException e) {
+          e.printStackTrace();
+        }
+      }
+      case VIDEO -> {
+        try {
+          vk.messages().send(actor).attachment(String.format("video-%d_%d", ownerId, Id)).userId(userId)
+              .randomId(random.nextInt(10000)).execute();
+        } catch (ApiException e) {
+          e.printStackTrace();
+        } catch (ClientException e) {
+          e.printStackTrace();
+        }
+      }
+      case DOCUMENT -> {
+        try {
+          vk.messages().send(actor).attachment(String.format("doc-%d_%d", ownerId, Id)).userId(userId)
+              .randomId(random.nextInt(10000)).execute();
         } catch (ApiException e) {
           e.printStackTrace();
         } catch (ClientException e) {
@@ -132,7 +217,8 @@ public class ChadNovelEngineVkBot {
       }
       default -> {
         try {
-          vk.messages().send(actor).message(m.content).userId(userId).randomId(random.nextInt(10000)).execute();
+          vk.messages().send(actor).message(m.content).userId(userId)
+              .randomId(random.nextInt(10000)).execute();
         } catch (ApiException e) {
           e.printStackTrace();
         } catch (ClientException e) {
