@@ -13,8 +13,8 @@ node: 1
 message text: Бармен: Музыку поставить?
 wrong_input_message: Ничего не понял
 answers:
-3: ＣＹＢＥＲ　ＤＲＥＡＭ [Chillwave - Synthwave Mix]
-4: DOOM - Original Game Soundtrack - Mick Gordon & id Software
+3: ＣＹＢＥＲ　ＤＲＥＡＭ [Chillwave-SynthwaveMix]
+4: DOOM - Original Game Soundtrack
 5: 日文、動漫音樂電台 | Anime Music
 
 node: 2
