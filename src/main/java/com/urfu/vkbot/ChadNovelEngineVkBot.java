@@ -75,97 +75,112 @@ public class ChadNovelEngineVkBot {
 
           }
           else {
-            var io = new VkIO();
-            io.setUserAnswer(messageText);
-            chadNovelEngineBackend.updateUser(userId, io);
-
-            var messages = io.getMessages();
-
-            for (var i = 0; i < messages.size() - 1; ++i) {
-              try {
-                executeMessage(vk,
-                    actor,
-                    userId,
-                    random,
-                    messages.get(i),
-                    ownerId,
-                    Id);
-              } catch (FileNotFoundException e) {
-                e.printStackTrace();
-              } catch (TelegramApiException e) {
-                e.printStackTrace();
-              } catch (InterruptedException e) {
-                e.printStackTrace();
-              } catch (ClientException e) {
-                e.printStackTrace();
-              } catch (ApiException e) {
-                e.printStackTrace();
+            switch (messageText) {
+              default -> {
+                handleMessages(userId, messageText, lastMessageTimeUNIX,
+                    chadNovelEngineBackend, actor, random, ownerId, Id, vk);
               }
             }
-
-            var buttons = io.getButtons();
-            var m = messages.get(messages.size() - 1);
-            switch (m.messageType) {
-              case IMAGE -> {
-                try {
-                  vk.messages().send(actor).attachment(String.format("photo-%d_%d", ownerId, Id))
-                      .userId(userId)
-                      .randomId(random.nextInt(10000)).keyboard(buttons).execute();
-                } catch (ApiException e) {
-                  e.printStackTrace();
-                } catch (ClientException e) {
-                  e.printStackTrace();
-                }
-              }
-              case MUSIC -> {
-                try {
-                  vk.messages().send(actor).attachment(String.format("audio-%d_%d", ownerId, Id)).userId(userId)
-                      .randomId(random.nextInt(10000)).keyboard(buttons).execute();
-                } catch (ApiException e) {
-                  e.printStackTrace();
-                } catch (ClientException e) {
-                  e.printStackTrace();
-                }
-              }
-              case VIDEO -> {
-                try {
-                  vk.messages().send(actor).attachment(String.format("video-%d_%d", ownerId, Id)).userId(userId)
-                      .randomId(random.nextInt(10000)).keyboard(buttons).execute();
-                } catch (ApiException e) {
-                  e.printStackTrace();
-                } catch (ClientException e) {
-                  e.printStackTrace();
-                }
-              }
-              case DOCUMENT -> {
-                try {
-                  vk.messages().send(actor).attachment(String.format("doc-%d_%d", ownerId, Id)).userId(userId)
-                      .randomId(random.nextInt(10000)).keyboard(buttons).execute();
-                } catch (ApiException e) {
-                  e.printStackTrace();
-                } catch (ClientException e) {
-                  e.printStackTrace();
-                }
-              }
-              default -> {
-                try {
-                  vk.messages().send(actor).message(m.content).userId(userId)
-                      .randomId(random.nextInt(10000)).keyboard(buttons).execute();
-                } catch (ApiException e) {
-                  e.printStackTrace();
-                } catch (ClientException e) {
-                  e.printStackTrace();
-                }
-              }
-            }  // It's a copy-paste, but it's the best you can do
           }
-
         });
         }
       ts = vk.messages().getLongPollServer(actor).execute().getTs();
       Thread.sleep(500);
     }
 
+  }
+
+  private static void handleMessages(int userId, String messageText,
+      HashMap<Integer, Long> lastMessageTimeUNIX,
+      Backend chadNovelEngineBackend,
+      GroupActor actor, Random random,
+      int ownerId, int Id, VkApiClient vk){
+      var io = new VkIO();
+      io.setUserAnswer(messageText);
+
+      lastMessageTimeUNIX.put(userId, System.currentTimeMillis());
+
+      chadNovelEngineBackend.updateUser(userId, io);
+
+      var messages = io.getMessages();
+
+      for (var i = 0; i < messages.size() - 1; ++i) {
+        try {
+          executeMessage(vk,
+              actor,
+              userId,
+              random,
+              messages.get(i),
+              ownerId,
+              Id);
+        } catch (FileNotFoundException e) {
+          e.printStackTrace();
+        } catch (TelegramApiException e) {
+          e.printStackTrace();
+        } catch (InterruptedException e) {
+          e.printStackTrace();
+        } catch (ClientException e) {
+          e.printStackTrace();
+        } catch (ApiException e) {
+          e.printStackTrace();
+        }
+      }
+
+      var buttons = io.getButtons();
+      var m = messages.get(messages.size() - 1);
+      switch (m.messageType) {
+        case IMAGE -> {
+          try {
+            vk.messages().send(actor).attachment(String.format("photo-200523079_457239018", ownerId, Id))
+                .userId(userId)
+                .randomId(random.nextInt(10000)).keyboard(buttons).execute();
+          } catch (ApiException e) {
+            e.printStackTrace();
+          } catch (ClientException e) {
+            e.printStackTrace();
+          }
+        }
+        case MUSIC -> {
+          try {
+            vk.messages().send(actor).attachment(String.format("audio-200575158_456239019", ownerId, Id)).userId(userId)
+                .randomId(random.nextInt(10000)).keyboard(buttons).execute();
+          } catch (ApiException e) {
+            e.printStackTrace();
+          } catch (ClientException e) {
+            e.printStackTrace();
+          }
+        }
+        case VIDEO -> {
+          try {
+            vk.messages().send(actor).attachment(String.format("video-%d_%d", ownerId, Id)).userId(userId)
+                .randomId(random.nextInt(10000)).keyboard(buttons).execute();
+          } catch (ApiException e) {
+            e.printStackTrace();
+          } catch (ClientException e) {
+            e.printStackTrace();
+          }
+        }
+        case DOCUMENT -> {
+          try {
+            vk.messages().send(actor).attachment(String.format("doc-%d_%d", ownerId, Id)).userId(userId)
+                .randomId(random.nextInt(10000)).keyboard(buttons).execute();
+          } catch (ApiException e) {
+            e.printStackTrace();
+          } catch (ClientException e) {
+            e.printStackTrace();
+          }
+        }
+        default -> {
+          try {
+            vk.messages().send(actor).message(m.content).userId(userId)
+                .randomId(random.nextInt(10000)).keyboard(buttons).execute();
+          } catch (ApiException e) {
+            e.printStackTrace();
+          } catch (ClientException e) {
+            e.printStackTrace();
+          }
+        }
+      }  // It's a copy-paste, but it's the best you can do
   }
 
   private static void executeMessage(VkApiClient vk, GroupActor actor, int userId,
@@ -176,7 +191,7 @@ public class ChadNovelEngineVkBot {
     switch (m.messageType) {
       case IMAGE -> {
         try {
-          vk.messages().send(actor).attachment(String.format("photo-%d_%d", ownerId, Id))
+          vk.messages().send(actor).attachment(String.format("photo-200523079_457239018", ownerId, Id))
               .userId(userId)
               .randomId(random.nextInt(10000)).execute();
         } catch (ApiException e) {
@@ -187,7 +202,7 @@ public class ChadNovelEngineVkBot {
       }
       case MUSIC -> {
         try {
-          vk.messages().send(actor).attachment(String.format("audio-%d_%d", ownerId, Id)).userId(userId)
+          vk.messages().send(actor).attachment(String.format("audio-200575158_456239019", ownerId, Id)).userId(userId)
               .randomId(random.nextInt(10000)).execute();
         } catch (ApiException e) {
           e.printStackTrace();
