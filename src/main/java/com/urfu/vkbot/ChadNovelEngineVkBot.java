@@ -9,13 +9,18 @@ import com.vk.api.sdk.client.actors.GroupActor;
 import com.vk.api.sdk.exceptions.ApiException;
 import com.vk.api.sdk.exceptions.ClientException;
 import com.vk.api.sdk.httpclient.HttpTransportClient;
+import com.vk.api.sdk.objects.messages.Keyboard;
 import com.vk.api.sdk.objects.messages.Message;
 import com.vk.api.sdk.queries.messages.MessagesGetLongPollHistoryQuery;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
+import java.util.Set;
 import lombok.extern.slf4j.Slf4j;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
@@ -25,7 +30,7 @@ public class ChadNovelEngineVkBot {
 
   private static HashMap<Integer, Long> test(){
     var tmp = new HashMap<Integer, Long>();
-    tmp.put(207887738, 1000 * 5 * 60L);
+    tmp.put(154175388, 1000 * 5 * 60L);
     return tmp;
   }
 
@@ -36,6 +41,13 @@ public class ChadNovelEngineVkBot {
     TransportClient transportClient = new HttpTransportClient();
     VkApiClient vk = new VkApiClient(transportClient);
     Random random = new Random();
+    Set<String> allUsers = new HashSet<String>();
+
+    var admins = new ArrayList<Integer>();
+    admins.add(207887738);
+
+    var banned = new HashMap<Integer, Long>();
+    BanManager banManager = new BanManager(banned, admins);
     GroupActor actor = new GroupActor(
         200523079,
         "9e9910a329bee4a9d77346ba8112445d3d6004b066edfec84d2dff1dc3eee76a43a35d261163b14a0b39e"
@@ -47,7 +59,6 @@ public class ChadNovelEngineVkBot {
 
     String bannedMessage = "You're banned!";
     HashMap<Integer, Long> lastMessageTimeUNIX = new HashMap<>();
-    BanManager banManager = new BanManager(test());
 
     while (true) {
       MessagesGetLongPollHistoryQuery historyQuery = vk.messages().getLongPollHistory(actor).ts(ts);
@@ -59,7 +70,7 @@ public class ChadNovelEngineVkBot {
           var messageText = message.getText();
           var userId = message.getFromId();
           System.out.println("Vk message from User: " + userId + ", data: " + message.getText());
-
+          allUsers.add("ban: "+userId.toString());
 
           if (lastMessageTimeUNIX.containsKey(userId) && banManager.filtered(userId,
               lastMessageTimeUNIX.get(userId))) {
@@ -75,12 +86,25 @@ public class ChadNovelEngineVkBot {
 
           }
           else {
+            var io = new VkIO();
             switch (messageText) {
+              case "CMS" -> {
+                try {
+                  sendAllUsers(vk, Arrays.copyOf(
+                          allUsers.toArray(),
+                          allUsers.size(),
+                          String[].class) , io, actor, userId, random);
+                } catch (ClientException e) {
+                  e.printStackTrace();
+                } catch (ApiException e) {
+                  e.printStackTrace();
+                }
+              }
               default -> {
-                handleMessages(userId, messageText, lastMessageTimeUNIX,
+                handleMessages(banManager, io, userId, messageText, lastMessageTimeUNIX,
                     chadNovelEngineBackend, actor, random, ownerId, Id, vk);
               }
-            }
+              }
           }
         });
         }
@@ -90,20 +114,30 @@ public class ChadNovelEngineVkBot {
 
   }
 
-  private static void handleMessages(int userId, String messageText,
+  private static void sendAllUsers(VkApiClient vk, String[] allUsers, VkIO io,
+      GroupActor actor, int userId, Random random) throws ClientException, ApiException {
+    io.printPossibleAnswers(allUsers);
+    vk.messages().send(actor).message("All users").userId(userId)
+        .randomId(random.nextInt(10000)).keyboard(io.getButtons()).execute();
+
+  }
+
+  private static void handleMessages(BanManager banManager, VkIO io, int userId, String messageText,
       HashMap<Integer, Long> lastMessageTimeUNIX,
       Backend chadNovelEngineBackend,
       GroupActor actor, Random random,
       int ownerId, int Id, VkApiClient vk){
-      var io = new VkIO();
+
+      if (messageText.startsWith("ban: ")){
+        var bannedUserId = Integer.parseInt(messageText.substring(5, messageText.length()));
+        if (!banManager.isAdmin(bannedUserId))
+          banManager.put(userId, bannedUserId);
+      }
+
       io.setUserAnswer(messageText);
-
       lastMessageTimeUNIX.put(userId, System.currentTimeMillis());
-
       chadNovelEngineBackend.updateUser(userId, io);
-
       var messages = io.getMessages();
-
       for (var i = 0; i < messages.size() - 1; ++i) {
         try {
           executeMessage(vk,
