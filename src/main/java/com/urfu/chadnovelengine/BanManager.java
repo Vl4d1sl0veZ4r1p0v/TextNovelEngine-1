@@ -2,12 +2,13 @@ package com.urfu.chadnovelengine;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 public class BanManager {
   private final HashMap<Integer, Long> banned;
-  private final ArrayList<Integer> admins;
+  private final List<Integer> admins;
 
-  public BanManager(HashMap<Integer, Long> banned, ArrayList<Integer> admins) {
+  public BanManager(HashMap<Integer, Long> banned, List<Integer> admins) {
     this.banned = banned;
     this.admins = admins;
   }
