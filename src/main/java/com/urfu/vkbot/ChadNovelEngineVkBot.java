@@ -130,8 +130,8 @@ public class ChadNovelEngineVkBot {
 
       if (messageText.startsWith("ban: ")){
         var bannedUserId = Integer.parseInt(messageText.substring(5, messageText.length()));
-        if (!banManager.isAdmin(bannedUserId))
-          banManager.put(userId, bannedUserId);
+//        if (!banManager.isAdmin(bannedUserId))
+        banManager.put(userId, bannedUserId, 1000 * 60 * 5L);
       }
 
       io.setUserAnswer(messageText);
