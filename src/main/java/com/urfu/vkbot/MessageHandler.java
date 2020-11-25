@@ -8,13 +8,12 @@ import com.vk.api.sdk.client.VkApiClient;
 import com.vk.api.sdk.client.actors.GroupActor;
 import com.vk.api.sdk.exceptions.ApiException;
 import com.vk.api.sdk.exceptions.ClientException;
+import com.vk.api.sdk.objects.messages.Keyboard;
 import com.vk.api.sdk.objects.messages.Message;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Random;
 import java.util.Set;
 
@@ -26,31 +25,34 @@ public class MessageHandler {
   private final Backend chadNovelEngineBackend;
   private final BanManager banManager;
   private final String bannedMessage;
-  private final HashMap<Integer, Long> lastMessageTimeUNIX;
+  private final String notAdminMessage;
   private final HashMap<MessageType, String> messageTypeFileTypeMap;
   private Integer ownerId;
   private Integer id;
-
-  private static HashMap<Integer, Long> test(){
-    var tmp = new HashMap<Integer, Long>();
-    tmp.put(154175388, 1000 * 5 * 60L);
-    return tmp;
-  }
 
   public MessageHandler(VkApiClient vk, GroupActor actor) throws IOException {
     this.vk = vk;
     this.actor = actor;
     random = new Random();
-    allUsers = new HashSet<String>();
     //
-    List<Integer> admins = new ArrayList<Integer>();
+    allUsers = new HashSet<String>();
+    allUsers.add("154175388");
+    allUsers.add("154175308");
+    allUsers.add("154175088");
+    allUsers.add("150175088");
+    allUsers.add("154170088");
+    allUsers.add("154075088");
+    //
+    Set<Integer> admins = new HashSet<>();
     admins.add(207887738);
     //
-    HashMap<Integer, Long> banned = new HashMap<Integer, Long>();
+    HashSet<Integer> banned = new HashSet<Integer>();
+    banned.add(154175388);
+    //
     chadNovelEngineBackend = new Backend();
     banManager = new BanManager(banned, admins);
     bannedMessage = "You're banned!";
-    lastMessageTimeUNIX = new HashMap<>();
+    notAdminMessage = "You aren't admin!";
     ownerId = 0;
     id = 0;
     //
@@ -82,7 +84,36 @@ public class MessageHandler {
     }
   }
 
-  public void handleMessage(Message message) throws ClientException, ApiException {
+  private Keyboard getCMSOptions(VkIO io){
+    String[] options = new String[]{"Ban panel"};
+    //
+    io.printPossibleAnswers(options);
+    return io.getButtons();
+  }
+
+  private void sendMessage(String message, Integer userId, Keyboard keyboard)
+      throws ClientException, ApiException {
+    vk.messages()
+        .send(actor)
+        .message(message)
+        .userId(userId)
+        .randomId(random.nextInt(10000))
+        .keyboard(keyboard)
+        .execute();
+  }
+
+  private void sendMessage(String message, Integer userId)
+      throws ClientException, ApiException {
+    vk.messages()
+        .send(actor)
+        .message(message)
+        .userId(userId)
+        .randomId(random.nextInt(10000))
+        .execute();
+  }
+
+  public void handleMessages(Message message)
+      throws ClientException, ApiException {
     var messageText = message.getText();
     var userId = message.getFromId();
 
@@ -92,28 +123,50 @@ public class MessageHandler {
 
     allUsers.add(userId.toString());
 
-    if (lastMessageTimeUNIX.containsKey(userId)
-        && banManager.filtered(userId, lastMessageTimeUNIX.get(userId))
-    ) {
-
+    if (banManager.isBanned(userId)) {
       vk.messages()
-          .send(actor)
-          .message(bannedMessage)
-          .userId(userId)
-          .randomId(random.nextInt(10000))
-          .execute();
+        .send(actor)
+        .message(bannedMessage)
+        .userId(userId)
+        .randomId(random.nextInt(10000))
+        .execute();
     }
     else {
       var io = new VkIO();
       switch (messageText) {
         case "CMS" -> {
-          sendAllUsers(Arrays.copyOf(
-              allUsers.toArray(),
-              allUsers.size(),
-              String[].class), io, userId);
+          if (banManager.isAdmin(userId))
+            vk.messages()
+              .send(actor)
+              .message("CMS options: ")
+              .keyboard(getCMSOptions(io))
+              .userId(userId)
+              .randomId(random.nextInt(10000))
+              .execute();
+          else
+            vk.messages()
+                .send(actor)
+                .message(notAdminMessage)
+                .userId(userId)
+                .randomId(random.nextInt(10000))
+                .execute();
+        }
+        case "Ban panel" -> {
+          if (banManager.isAdmin(userId))
+            sendAllUsers(Arrays.copyOf(
+                allUsers.toArray(),
+                allUsers.size(),
+                String[].class), io, userId);
+          else
+            vk.messages()
+                .send(actor)
+                .message(notAdminMessage)
+                .userId(userId)
+                .randomId(random.nextInt(10000))
+                .execute();
         }
         default -> {
-          handleMessages(io, messageText, userId);
+          handleMessage(io, messageText, userId);
         }
       }
     }
@@ -121,7 +174,12 @@ public class MessageHandler {
 
   private void sendAllUsers(String[] allUsers, VkIO io, int userId)
       throws ClientException, ApiException {
+    for (var i = 0; i < allUsers.length; ++i) {
+      var currentUser = Integer.parseInt(allUsers[i]);
+      allUsers[i] = (banManager.isBanned(currentUser) ? "Unban: " : "Ban: ") + allUsers[i];
+    }
     io.printPossibleAnswers(allUsers);
+
     vk.messages()
       .send(actor)
       .message("All users")
@@ -129,65 +187,88 @@ public class MessageHandler {
       .randomId(random.nextInt(10000))
       .keyboard(io.getButtons())
       .execute();
-
   }
-  private void handleMessages(VkIO io, String messageText, int userId)
+
+  private void handleMessage(VkIO io, String messageText, int userId)
       throws ClientException, ApiException {
 
-//    if (messageText.startsWith("ban: ")){
-//      var bannedUserId = Integer.parseInt(messageText.substring(5, messageText.length()));
-////        if (!banManager.isAdmin(bannedUserId))
-//      banManager.put(userId, bannedUserId, 1000 * 60 * 5L);
-//    }
-
-    io.setUserAnswer(messageText);
-    lastMessageTimeUNIX.put(userId, System.currentTimeMillis());
-    chadNovelEngineBackend.updateUser(userId, io);
-
-    ownerId = 0;
-    id = 0;
-    filesParameters(messageText);
-
-    var messages = io.getMessages();
-    for (var i = 0; i < messages.size() - 1; ++i) {
-      try {
-        executeMessage(
-            messageTypeFileTypeMap
-                .get(messages.get(i).messageType),
-            userId,
-            messages.get(i)
-        );
-      } catch (ClientException e) {
-        e.printStackTrace();
-      } catch (ApiException e) {
-        e.printStackTrace();
+    if (banManager.isAdmin(userId)
+        && (messageText.startsWith("Ban: ") || messageText.startsWith("Unban: "))){
+      StringBuilder message = new StringBuilder();
+      message.append("User : ");
+      if (messageText.startsWith("Ban: ")){
+        var bannedUserId = Integer.parseInt(messageText.substring(5, messageText.length()));
+        message.append(bannedUserId);
+          if (!banManager.isAdmin(bannedUserId)) {
+            banManager.banUserById(bannedUserId);
+            message.append(" banned.");
+          }
+          else
+            message.append(" can't be banned.");
+        } else if (messageText.startsWith("Unban: ")) {
+        var unbannedUserId = Integer.parseInt(messageText.substring(7, messageText.length()));
+        banManager.unbanUserById(unbannedUserId);
+        message.append(unbannedUserId);
+        message.append(" unbanned.");
       }
-    }
-
-    ownerId = 0;
-    id = 0;
-    filesParameters(messageText);
-    var buttons = io.getButtons();
-    var m = messages.get(messages.size() - 1);
-    switch (m.messageType) {
-      case IMAGE, MUSIC, VIDEO, DOCUMENT -> {
-        vk.messages()
+      vk.messages()
           .send(actor)
-          .attachment(
-              messageTypeFileTypeMap.get(m.messageType) + String.format("-%d_%d", ownerId, id))
+          .message(message.toString())
           .userId(userId)
           .randomId(random.nextInt(10000))
-          .keyboard(buttons)
+          .keyboard(new Keyboard())
           .execute();
+      sendAllUsers(Arrays.copyOf(
+          allUsers.toArray(),
+          allUsers.size(),
+          String[].class), io, userId);
+    } else {
+      io.setUserAnswer(messageText);
+      chadNovelEngineBackend.updateUser(userId, io);
+      ownerId = 0;
+      id = 0;
+      filesParameters(messageText);
+      var messages = io.getMessages();
+      for (var i = 0; i < messages.size() - 1; ++i) {
+        try {
+          executeMessage(
+              messageTypeFileTypeMap
+                  .get(messages.get(i).messageType),
+              userId,
+              messages.get(i)
+          );
+        } catch (ClientException e) {
+          e.printStackTrace();
+        } catch (ApiException e) {
+          e.printStackTrace();
+        }
       }
-      default -> {
-        vk.messages()
-          .send(actor)
-          .message(m.content)
-          .userId(userId)
-          .randomId(random.nextInt(10000))
-          .keyboard(buttons)
-          .execute();
+      ownerId = 0;
+      id = 0;
+      filesParameters(messageText);
+      var buttons = io.getButtons();
+      var m = messages.get(messages.size() - 1);
+      switch (m.messageType) {
+        case IMAGE, MUSIC, VIDEO, DOCUMENT -> {
+          vk.messages()
+              .send(actor)
+              .attachment(
+                  messageTypeFileTypeMap
+                      .get(m.messageType) + String.format("-%d_%d", ownerId, id))
+              .userId(userId)
+              .randomId(random.nextInt(10000))
+              .keyboard(buttons)
+              .execute();
+        }
+        default -> {
+          vk.messages()
+              .send(actor)
+              .message(m.content)
+              .userId(userId)
+              .randomId(random.nextInt(10000))
+              .keyboard(buttons)
+              .execute();
+        }
       }
     }
   }

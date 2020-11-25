@@ -36,7 +36,7 @@ public class ChadNovelEngineVkBot {
       if (!messagesHistory.isEmpty()) {
         messagesHistory.forEach(message -> {
           try {
-            messageHandler.handleMessage(message);
+            messageHandler.handleMessages(message);
           } catch (ClientException e) {
             e.printStackTrace();
           } catch (ApiException e) {

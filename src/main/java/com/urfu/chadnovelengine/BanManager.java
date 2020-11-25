@@ -1,33 +1,35 @@
 package com.urfu.chadnovelengine;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import java.util.Set;
 
 public class BanManager {
-  private final HashMap<Integer, Long> banned;
-  private final List<Integer> admins;
+  private final Set<Integer> banned;
+  private final Set<Integer> admins;
 
-  public BanManager(HashMap<Integer, Long> banned, List<Integer> admins) {
+  public BanManager(Set<Integer> banned, Set<Integer> admins) {
     this.banned = banned;
     this.admins = admins;
   }
 
-  public void addAdmin(Integer admin, Integer newAdmin){
-    if (admins.contains(admin))
-      admins.add(newAdmin);
+  public boolean isAdmin(Integer userId){
+    return admins.contains(userId);
   }
 
-  public boolean filtered(long chatId, long startTime){
-    var currentTime = System.currentTimeMillis();
-    var elapsedTime = currentTime - startTime;
-    if (banned.containsKey(chatId) && banned.get(chatId) > elapsedTime)
+  public void addAdmin(Integer adminId, Integer newAdminId){
+      admins.add(newAdminId);
+  }
+
+  public boolean isBanned(Integer userId){
+    if (banned.contains(userId))
       return true;
     return false;
   }
 
-  public void put(Integer adminId, Integer chatId, long bannedTime){
-    if (admins.contains(adminId))
-      banned.put(chatId, bannedTime);
+  public void banUserById(Integer userId){
+      banned.add(userId);
+  }
+
+  public void unbanUserById(Integer userId){
+    banned.remove(userId);
   }
 }
