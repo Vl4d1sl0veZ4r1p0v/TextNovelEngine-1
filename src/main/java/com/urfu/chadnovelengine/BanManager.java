@@ -15,14 +15,8 @@ public class BanManager {
     return admins.contains(userId);
   }
 
-  public void addAdmin(Integer adminId, Integer newAdminId){
-      admins.add(newAdminId);
-  }
-
   public boolean isBanned(Integer userId){
-    if (banned.contains(userId))
-      return true;
-    return false;
+    return banned.contains(userId);
   }
 
   public void banUserById(Integer userId){

@@ -34,20 +34,11 @@ public class MessageHandler {
     this.vk = vk;
     this.actor = actor;
     random = new Random();
-    //
-    allUsers = new HashSet<String>();
-    allUsers.add("154175388");
-    allUsers.add("154175308");
-    allUsers.add("154175088");
-    allUsers.add("150175088");
-    allUsers.add("154170088");
-    allUsers.add("154075088");
-    //
+    allUsers = new HashSet<>();
     Set<Integer> admins = new HashSet<>();
     admins.add(207887738);
     //
-    HashSet<Integer> banned = new HashSet<Integer>();
-    banned.add(154175388);
+    HashSet<Integer> banned = new HashSet<>();
     //
     chadNovelEngineBackend = new Backend();
     banManager = new BanManager(banned, admins);
@@ -56,7 +47,27 @@ public class MessageHandler {
     ownerId = 0;
     id = 0;
     //
-    messageTypeFileTypeMap = new HashMap<MessageType, String>();
+    messageTypeFileTypeMap = new HashMap<>();
+    messageTypeFileTypeMap.put(MessageType.IMAGE, "photo");
+    messageTypeFileTypeMap.put(MessageType.MUSIC, "audio");
+    messageTypeFileTypeMap.put(MessageType.VIDEO, "video");
+    messageTypeFileTypeMap.put(MessageType.DOCUMENT, "doc");
+  }
+
+  public MessageHandler(VkApiClient vk, GroupActor actor, BanManager banManager)
+      throws IOException {
+    this.vk = vk;
+    this.actor = actor;
+    random = new Random();
+    allUsers = new HashSet<>();
+    chadNovelEngineBackend = new Backend();
+    this.banManager = banManager;
+    bannedMessage = "You're banned!";
+    notAdminMessage = "You aren't admin!";
+    ownerId = 0;
+    id = 0;
+    //
+    messageTypeFileTypeMap = new HashMap<>();
     messageTypeFileTypeMap.put(MessageType.IMAGE, "photo");
     messageTypeFileTypeMap.put(MessageType.MUSIC, "audio");
     messageTypeFileTypeMap.put(MessageType.VIDEO, "video");
@@ -124,32 +135,16 @@ public class MessageHandler {
     allUsers.add(userId.toString());
 
     if (banManager.isBanned(userId)) {
-      vk.messages()
-        .send(actor)
-        .message(bannedMessage)
-        .userId(userId)
-        .randomId(random.nextInt(10000))
-        .execute();
+      sendMessage(bannedMessage, userId);
     }
     else {
       var io = new VkIO();
       switch (messageText) {
         case "CMS" -> {
           if (banManager.isAdmin(userId))
-            vk.messages()
-              .send(actor)
-              .message("CMS options: ")
-              .keyboard(getCMSOptions(io))
-              .userId(userId)
-              .randomId(random.nextInt(10000))
-              .execute();
+            sendMessage("CMS options: ", userId, getCMSOptions(io));
           else
-            vk.messages()
-                .send(actor)
-                .message(notAdminMessage)
-                .userId(userId)
-                .randomId(random.nextInt(10000))
-                .execute();
+            sendMessage(notAdminMessage, userId);
         }
         case "Ban panel" -> {
           if (banManager.isAdmin(userId))
@@ -158,16 +153,9 @@ public class MessageHandler {
                 allUsers.size(),
                 String[].class), io, userId);
           else
-            vk.messages()
-                .send(actor)
-                .message(notAdminMessage)
-                .userId(userId)
-                .randomId(random.nextInt(10000))
-                .execute();
+            sendMessage(notAdminMessage, userId);
         }
-        default -> {
-          handleMessage(io, messageText, userId);
-        }
+        default -> handleMessage(io, messageText, userId);
       }
     }
   }
@@ -179,14 +167,7 @@ public class MessageHandler {
       allUsers[i] = (banManager.isBanned(currentUser) ? "Unban: " : "Ban: ") + allUsers[i];
     }
     io.printPossibleAnswers(allUsers);
-
-    vk.messages()
-      .send(actor)
-      .message("All users")
-      .userId(userId)
-      .randomId(random.nextInt(10000))
-      .keyboard(io.getButtons())
-      .execute();
+    sendMessage("All users", userId, io.getButtons());
   }
 
   private void handleMessage(VkIO io, String messageText, int userId)
@@ -197,7 +178,7 @@ public class MessageHandler {
       StringBuilder message = new StringBuilder();
       message.append("User : ");
       if (messageText.startsWith("Ban: ")){
-        var bannedUserId = Integer.parseInt(messageText.substring(5, messageText.length()));
+        var bannedUserId = Integer.parseInt(messageText.substring(5));
         message.append(bannedUserId);
           if (!banManager.isAdmin(bannedUserId)) {
             banManager.banUserById(bannedUserId);
@@ -206,18 +187,12 @@ public class MessageHandler {
           else
             message.append(" can't be banned.");
         } else if (messageText.startsWith("Unban: ")) {
-        var unbannedUserId = Integer.parseInt(messageText.substring(7, messageText.length()));
+        var unbannedUserId = Integer.parseInt(messageText.substring(7));
         banManager.unbanUserById(unbannedUserId);
         message.append(unbannedUserId);
         message.append(" unbanned.");
       }
-      vk.messages()
-          .send(actor)
-          .message(message.toString())
-          .userId(userId)
-          .randomId(random.nextInt(10000))
-          .keyboard(new Keyboard())
-          .execute();
+      sendMessage(message.toString(), userId);
       sendAllUsers(Arrays.copyOf(
           allUsers.toArray(),
           allUsers.size(),
@@ -237,9 +212,7 @@ public class MessageHandler {
               userId,
               messages.get(i)
           );
-        } catch (ClientException e) {
-          e.printStackTrace();
-        } catch (ApiException e) {
+        } catch (ClientException | ApiException e) {
           e.printStackTrace();
         }
       }
@@ -249,26 +222,16 @@ public class MessageHandler {
       var buttons = io.getButtons();
       var m = messages.get(messages.size() - 1);
       switch (m.messageType) {
-        case IMAGE, MUSIC, VIDEO, DOCUMENT -> {
-          vk.messages()
-              .send(actor)
-              .attachment(
-                  messageTypeFileTypeMap
-                      .get(m.messageType) + String.format("-%d_%d", ownerId, id))
-              .userId(userId)
-              .randomId(random.nextInt(10000))
-              .keyboard(buttons)
-              .execute();
-        }
-        default -> {
-          vk.messages()
-              .send(actor)
-              .message(m.content)
-              .userId(userId)
-              .randomId(random.nextInt(10000))
-              .keyboard(buttons)
-              .execute();
-        }
+        case IMAGE, MUSIC, VIDEO, DOCUMENT -> vk.messages()
+            .send(actor)
+            .attachment(
+                messageTypeFileTypeMap
+                    .get(m.messageType) + String.format("-%d_%d", ownerId, id))
+            .userId(userId)
+            .randomId(random.nextInt(10000))
+            .keyboard(buttons)
+            .execute();
+        default -> sendMessage(m.content, userId, buttons);
       }
     }
   }
@@ -278,22 +241,13 @@ public class MessageHandler {
       com.urfu.chadnovelengine.backendapi.Message m)
       throws ClientException, ApiException {
     switch (m.messageType) {
-      case IMAGE, MUSIC, VIDEO, DOCUMENT -> {
-        vk.messages()
-          .send(actor)
-          .attachment(fileType + String.format("-%d_%d", ownerId, id))
-          .userId(userId)
-          .randomId(random.nextInt(10000))
-          .execute();
-      }
-      default -> {
-        vk.messages()
-          .send(actor)
-          .message(m.content)
-          .userId(userId)
-          .randomId(random.nextInt(10000))
-          .execute();
-      }
+      case IMAGE, MUSIC, VIDEO, DOCUMENT -> vk.messages()
+        .send(actor)
+        .attachment(fileType + String.format("-%d_%d", ownerId, id))
+        .userId(userId)
+        .randomId(random.nextInt(10000))
+        .execute();
+      default -> sendMessage(m.content, userId);
     }
   }
 }
